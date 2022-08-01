@@ -1,4 +1,4 @@
-install.packages(c("imager", "magick", "tesseract", "ISOweek", "dplyr"), dependencies = TRUE)
+install.packages(c("dplyr", "imager", "magick", "tesseract", "ISOweek"), dependencies = FALSE)
 
 library(imager)
 library(magick)
