@@ -16,7 +16,7 @@ jobs:
           r-version: 4.1.0
     
     - name: Install XQuartz for imager
-      run: brew cask install xquartz
+      run: brew install xquartz --cask
           
     - name: Cache R packages 
       uses: actions/cache@v1 
