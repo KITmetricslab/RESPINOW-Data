@@ -1,0 +1,6 @@
+os
+numpy
+pandas
+requests
+epiweeks
+tqdm
