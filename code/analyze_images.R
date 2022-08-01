@@ -1,9 +1,10 @@
+install.packages(c("imager", "magick", "tesseract", "ISOweek", "dplyr"), dependencies = TRUE)
+
 library(imager)
 library(magick)
 library(tesseract)
 library(ISOweek)
 library(dplyr)
-library(ISOweek)
 
 #Set tesseract settings
 numbers <- tesseract(options = list(tessedit_char_whitelist = "0123456789"))
