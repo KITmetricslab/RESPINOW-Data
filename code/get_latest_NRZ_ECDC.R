@@ -1,3 +1,5 @@
+install.packages(c("tidyverse", "httr", "jsonlite", "ISOweek"), dependencies = TRUE)
+
 library(tidyverse)
 library(httr)
 library(jsonlite)
