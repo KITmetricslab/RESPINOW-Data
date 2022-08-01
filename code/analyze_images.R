@@ -212,6 +212,15 @@ convert_to_string <- function(num){
   }
 }
 
+#' Gets the Date of the Sunday of the ISOweek
+#'  @param year The given year as integer
+#'  @param week The given week as string
+#'  @return The Date of the Sunday
+date_in_week <- function(year, week, weekday = 7){
+  w <- paste0(year, "-W", week, "-", weekday)
+  return(as.character(ISOweek2date(w)))
+}
+
 #' Analyzes images and creates csv for a specified dataset
 #' @param year The given year
 #' @param week The given week
