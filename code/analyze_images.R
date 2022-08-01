@@ -1,10 +1,10 @@
 library(imager)
 library(magick)
 library(tesseract)
+library(ISOweek)
+library(dplyr)
+library(ISOweek)
 
-
-#Set working directory
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 #Set tesseract settings
 numbers <- tesseract(options = list(tessedit_char_whitelist = "0123456789"))
 
@@ -101,11 +101,10 @@ get_ticks <- function(image, axis_position){
 #'@param axis_position The calculated axis position
 #'@param x_tick The x_tick to calculate the bar height for
 #'@return The value of the bar height
-get_single_value <- function(image, axis_position, x_tick, scale){
+get_single_value <- function(image, axis_position, ticks, x_tick, scale){
   threshold <- 0.99
   size <- get_image_size(image)
   image_array <- as.array(image)
-  ticks <- get_ticks(image, axis_position)
   
   #Take mean over different pixels around tick position
   x_seq <- c((x_tick-1),x_tick, (x_tick+1))
@@ -182,7 +181,7 @@ get_whole_image_data <- function(image_m, image_c, axis_position){
   
   i <- 1
   for (tick in ticks$x_pos[-1]){
-    value <- get_single_value(image_c, axis_position, tick, scale)
+    value <- get_single_value(image_c, axis_position, ticks, tick, scale)
     result_arr[i] <- value
     i <- i+1
   }
@@ -194,10 +193,88 @@ get_whole_image_data <- function(image_m, image_c, axis_position){
 #'@return Array including all bar heights of the graphic
 get_data_from_path <- function(PATH){
   img_m <- read_image(PATH, type = "magick")
-  img_c <- read_image(PATH)
+  img_c <- magick2cimg(img_m)
   img_gray <- convert_to_grayscale(img_c)
   axis_pos <- get_axis_position(img_gray)
   data <- get_whole_image_data(img_m, img_gray, axis_pos)
   return(data)
 }
 
+#' Converts integer week into the specified string format
+#' @param num Week as integer
+#' @return Week in needed string format
+convert_to_string <- function(num){
+  if (num<10){
+    return(paste("0",num, sep = ""))
+  }else{
+    return(as.character(num))
+  }
+}
+
+#' Analyzes images and creates csv for a specified dataset
+#' @param year The given year
+#' @param week The given week
+#' @param file_path The path to the data folder
+#' @param n_weeks The number of IsoWeeks the current year has
+create_csv <- function(year, week, url, file_path, n_weeks = 52){
+  #Pre work
+  week_int <- as.integer(week)
+  week_list <- sapply(c(40:n_weeks,1:39), FUN = convert_to_string)
+  split_length <- n_weeks - 39
+  file_name <- paste(date_in_week(year,week,7), "_", output_names[url], sep = "")
+  
+  # Check disease, RSV does not have data for county DE
+  if (substr(url,1,3) == "RSV"){
+    counties <- german_counties[-1]
+    disease <- "rsv"
+  }else{
+    counties <- german_counties
+    disease <- "influenza"
+  }
+  
+  #Calculate results
+  results <- matrix(ncol = 5)
+  for (county in names(counties)){
+    county_number <- german_counties[county]
+    image_url <- paste(url_start, (year-1), "_",(year), "/", week, "/",
+                       county_number, "_", url, "_", week, "_", (year-1), year,
+                       ".gif", sep = "")
+    data <- get_data_from_path(image_url)
+    
+    #Use for cutting of future values
+    if (week_int <= 39){
+      week_cutoff <- split_length + week_int + 2 #Add 2 for problem with future values
+      year_list <- c(rep((year-1),split_length),rep(year,(n_weeks-split_length)))
+    }else{
+      week_cutoff <- week_int - (40-1) + 2
+      year_list <- c(rep(year,split_length),rep((year+1),(n_weeks-split_length)))
+    }
+    
+    new_data <- cbind(year_list[1:week_cutoff],week_list[1:week_cutoff],
+                      rep(county, week_cutoff), rep("00+", week_cutoff), data[1:week_cutoff])
+    results <- rbind(results, new_data)
+  }
+  
+  results_df <- data.frame(results[-1,])
+  colnames(results_df) <- c("year", "week", "location", "age_group", "value")
+  #Calculate date
+  results_df$year <- as.integer(results_df$year)
+  results_df$value <- as.integer(results_df$value)
+  results_df$date <- mapply(FUN = date_in_week, results_df$year, results_df$week)
+  
+  #Add aggregation from countries for RSV
+  if (disease == "rsv"){
+    agg_value <- aggregate(value~date, data = results_df, FUN = sum)
+    agg_data <- cbind(year_list[1:week_cutoff],week_list[1:week_cutoff],
+                      rep("DE", week_cutoff), rep("00+", week_cutoff),
+                      agg_value$value, agg_value$date)
+    colnames(agg_data) <- c("year", "week", "location", "age_group", "value","date")
+    
+    results_df <- rbind(results_df, agg_data)
+  }
+  
+  results_df <- results_df[order(results_df$location),]
+  results_df <- select(results_df,"date", c("date", "location", "age_group", "value"))
+  output_path <- paste(file_path, disease, "/", file_name, ".csv", sep = "")
+  write.csv(results_df, output_path, row.names = FALSE)
+}
