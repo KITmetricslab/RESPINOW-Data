@@ -5,7 +5,7 @@ on:
     #- cron: "0 4,14 * * *"   
 
 jobs:
-  deploy-shiny:
+  get-NRZ-data:
     runs-on: macOS-latest
     steps:
     - uses: actions/checkout@main
