@@ -57,6 +57,8 @@ def get_relevant_dates(df_files):
 
     max_date = df_files.iso_date.max().enddate()
     min_date = df_files.iso_date.min().enddate()
+    
+    print(max_date)
 
     dates = pd.date_range(min_date, max_date, freq="1W")
     dates = [Week.fromdate(d, system='iso') for d in dates]
