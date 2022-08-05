@@ -35,7 +35,6 @@ def list_all_files(disease):
     files = os.listdir(PATH + disease)
 
     files = [f for f in files if 'VirusDetections' in f]
-    print(files[-5:])
 
     # create dataframe so we can easily select files by date
     df_files = pd.DataFrame({'filename': files})
@@ -58,15 +57,13 @@ def get_relevant_dates(df_files):
     max_date = df_files.iso_date.max().enddate()
     min_date = df_files.iso_date.min().enddate()
     
-    print(max_date)
-
     dates = pd.date_range(min_date, max_date, freq="1W")
     dates = [Week.fromdate(d, system='iso') for d in dates]
 
     # remove current week as the data might not be available/final yet
-    current_week = Week.thisweek(system='iso')
-    if current_week in dates:
-        dates.remove(current_week)
+    # current_week = Week.thisweek(system='iso')
+    # if current_week in dates:
+    #    dates.remove(current_week)
 
     return date_dict, dates
 
@@ -117,7 +114,6 @@ def compute_reporting_triangle(disease, max_delay=10):
     df = make_template(dates)
     for delay in tqdm(range(0, max_delay + 1), total=max_delay + 1, desc=f"{disease.replace('_', ' ')}: "):
         relevant_dates = [d for d in dates if d <= max(dates) - delay]
-        print(relevant_dates[-10:])
         df_temp = make_template(relevant_dates)
         dfs = []
         for date in relevant_dates:
