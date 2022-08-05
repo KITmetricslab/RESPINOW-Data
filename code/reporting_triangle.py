@@ -35,6 +35,7 @@ def list_all_files(disease):
     files = os.listdir(PATH + disease)
 
     files = [f for f in files if 'VirusDetections' in f]
+    print(files)
 
     # create dataframe so we can easily select files by date
     df_files = pd.DataFrame({'filename': files})
