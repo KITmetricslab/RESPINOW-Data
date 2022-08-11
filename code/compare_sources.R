@@ -7,7 +7,7 @@ Sys.setlocale("LC_ALL", "C")
 
 # SARI
 
-df1 <- read_csv("data/truth/SARI/SARI-2022-24.csv") %>% 
+df1 <- read_csv("data/SARI/SARI-2022-24.csv") %>% 
   filter(stratum == "A00.") %>% 
   select(date, value) %>% 
   mutate(source = "SARI")
@@ -18,7 +18,7 @@ ggplot(df1, aes(x = date, y = value)) +
 
 # RespVir
 
-df_all <- read_csv("data/truth/RespVir/respVir_filtered_csv/respVir_filtered.csv")
+df_all <- read_csv("data/RespVir/respVir_filtered.csv")
 
 df2 <- df_all %>% 
   select(c(1:6, infasaisonpos)) %>% 
@@ -57,7 +57,7 @@ ggplot(df2, aes(x = date, y = value)) +
 
 # Survstat
 
-df3 <- read_csv("data/truth/latest_truth_seasonal_influenza.csv") %>% 
+df3 <- read_csv("data/Survstat/latest_truth_seasonal_influenza.csv") %>% 
   filter(location == "DE",
          age_group == "00+") %>% 
   select(date, value) %>% 
@@ -66,7 +66,7 @@ df3 <- read_csv("data/truth/latest_truth_seasonal_influenza.csv") %>%
 
 # NRZ (Nationales Referenzzentrum)
 
-df4 <- read_csv("data/truth/NRZ/influenza/2022-07-03_VirusDetections.csv") %>% 
+df4 <- read_csv("data/NRZ/influenza/2022-07-03_VirusDetections.csv") %>% 
   filter(location == "DE",
          age_group == "00+") %>% 
   select(date, value) %>% 
@@ -75,7 +75,7 @@ df4 <- read_csv("data/truth/NRZ/influenza/2022-07-03_VirusDetections.csv") %>%
 
 # Influenza Net (Grippeweb)
 library(ISOweek)
-df5 <- read_csv("data/truth/InfluenzaNet/DE_incidence.csv")
+df5 <- read_csv("data/InfluenzaNet/DE_incidence.csv")
 
 df5 <- df5 %>% 
   mutate(year = str_sub(yw, 1, 4),
@@ -90,7 +90,7 @@ df5 <- df5 %>%
 
 # ECDC
 
-df6 <- read_csv("data/truth/ECDC/ECDC_surveillance_data_Influenza.csv")
+df6 <- read_csv("data/ECDC/ECDC_surveillance_data_Influenza.csv")
 
 df6 <- df6 %>% 
   mutate(dt = paste0(Time, "-7"),
@@ -100,16 +100,29 @@ df6 <- df6 %>%
   select(date, value) %>% 
   mutate(source = "ECDC")
 
+# FluNews
+library(readxl)
+df7 <- read_excel("data/FluNews/FluNews_SARI.xlsx")
+
+df7 <- df7 %>% 
+  filter(Country == "Germany") %>% 
+  mutate(dt = paste0(Week, "-7"),
+         date = ISOweek2date(dt),
+         value = `Number of SARI cases`
+  )  %>% 
+  select(date, value) %>% 
+  mutate(source = "FluNews")
+
 # Combined
 
-df <- bind_rows(df1, df2, df3, df4, df5, df6) %>% 
+df <- bind_rows(df1, df2, df3, df4, df5, df6, df7) %>% 
   filter(date >= "2019-01-01")
 
 ggplot(df, aes(x = date, y = value, colour = source)) +
   geom_line() 
 
 ggplot(df, aes(x = date, y = value, colour = source)) +
-  geom_line(size = 1) +
+  geom_line() +
   #geom_point() +
   scale_y_log10() +
   labs(title = "Influenza",
@@ -118,7 +131,7 @@ ggplot(df, aes(x = date, y = value, colour = source)) +
        colour = "Data source") +
   theme_bw()
 
-ggsave("figures/comparison_influenza.png", width = 200, height = 150, unit = "mm", device = "png")    
+ggsave("figures/comparison_influenza.png", width = 250, height = 150, unit = "mm", device = "png")    
 
 
 
@@ -196,7 +209,7 @@ ggsave("figures/comparison_influenza_ECDC_NRZ_RespVir.png", width = 200, height 
 
 # SARI + ZI
 # Influenza Net (Grippeweb)
-df5 <- read_csv("data/truth/InfluenzaNet/DE_incidence.csv")
+df5 <- read_csv("data/InfluenzaNet/DE_incidence.csv")
 
 df5 <- df5 %>% 
   mutate(year = str_sub(yw, 1, 4),
@@ -208,7 +221,7 @@ df5 <- df5 %>%
   select(date, value) %>% 
   mutate(source = "GrippeWeb")
 
-df7 <- read_csv("data/truth/ZI/data-VNscS.csv") %>% 
+df7 <- read_csv("data/ZI/data-VNscS.csv") %>% 
   rename(date = Datum, value = ARE) %>% 
   mutate(source = "ZI")
 
@@ -236,7 +249,7 @@ ggsave("figures/comparison_sari_zi_grippeweb_scaled.png", width = 250, height = 
 
 # RespVir
 
-df_all <- read_csv("data/truth/RespVir/respVir_filtered_csv/respVir_filtered.csv")
+df_all <- read_csv("data/RespVir/respVir_filtered.csv")
 
 df2 <- df_all %>% 
   select(c(1:6, rsvpos)) %>% 
@@ -275,7 +288,7 @@ ggplot(df2, aes(x = date, y = value)) +
 
 # Survstat
 
-df3 <- read_csv("data/truth/latest_truth_rsv_infection.csv") %>% 
+df3 <- read_csv("data/Survstat/latest_truth_rsv_infection.csv") %>% 
   filter(location == "DE",
          age_group == "00+") %>% 
   select(date, value) %>% 
@@ -284,14 +297,14 @@ df3 <- read_csv("data/truth/latest_truth_rsv_infection.csv") %>%
 
 # NRZ (Nationales Referenzzentrum)
 
-df4 <- read_csv("data/truth/NRZ/rsv/2022-07-03_VirusDetections.csv") %>% 
+df4 <- read_csv("data/NRZ/rsv/2022-07-03_VirusDetections.csv") %>% 
   group_by(date) %>% 
   summarize(value = sum(value)) %>% 
   mutate(source = "NRZ")
 
 # ECDC
 
-df6 <- read_csv("data/truth/ECDC/ECDC_surveillance_data_Respiratory_Syncytial_Virus.csv")
+df6 <- read_csv("data/ECDC/ECDC_surveillance_data_Respiratory_Syncytial_Virus.csv")
 
 df6 <- df6 %>% 
   mutate(dt = paste0(Time, "-7"),
@@ -322,7 +335,7 @@ ggsave("figures/comparison_rsv.png", width = 200, height = 150, unit = "mm", dev
 
 # RespVir
 
-df_all <- read_csv("data/truth/RespVir/respVir_filtered_csv/respAll_filtered.csv")
+df_all <- read_csv("data/RespVir/respAll_filtered.csv")
 
 df2 <- df_all %>% 
   select(c(1:7, bakstrepos))%>% 
@@ -359,7 +372,7 @@ ggplot(df2, aes(x = date, y = value)) +
 
 # Survstat
 
-df3 <- read_csv("data/truth/latest_truth_pneumococcal_disease.csv") %>% 
+df3 <- read_csv("data/Survstat/latest_truth_pneumococcal_disease.csv") %>% 
   filter(location == "DE",
          age_group == "00+") %>% 
   select(date, value) %>% 
