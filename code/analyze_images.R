@@ -284,7 +284,7 @@ create_csv <- function(year, week, url, file_path, n_weeks = 52){
   }
   
   results_df <- results_df[order(results_df$location),]
-  results_df <- select(results_df,"date", c("date", "location", "age_group", "value"))
+  results_df <- select(results_df,"date", c("date", "week", "location", "age_group", "value"))
   output_path <- paste(file_path, disease, "/", file_name, ".csv", sep = "")
   write.csv(results_df, output_path, row.names = FALSE)
 }
