@@ -49,8 +49,8 @@ for (week in latest_week:current_week){
   
   #Convert to svg
   svg_destination <- paste(file_path, file_name, ".svg", sep = "")
-  system2("inkscape", args = c("--without-gui", paste("--file=", pdf_page_destination, sep = ""), 
-                               paste("--export-plain-svg=", svg_destination, sep = "")))
+  system2("inkscape", args = c(pdf_page_destination, "--export-type = svg",
+                               paste("--export-filename=", svg_destination, sep = "")))
   
   
   
