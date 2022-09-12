@@ -253,10 +253,10 @@ create_csv <- function(year, week, url, file_path, n_weeks = 52){
     
     #Use for cutting of future values
     if (week_int <= 39){
-      week_cutoff <- split_length + week_int + 2 #Add 2 for problem with future values
+      week_cutoff <- split_length + week_int
       year_list <- c(rep((year-1),split_length),rep(year,(n_weeks-split_length)))
     }else{
-      week_cutoff <- week_int - (40-1) + 2
+      week_cutoff <- week_int - (40-1)
       year_list <- c(rep(year,split_length),rep((year+1),(n_weeks-split_length)))
     }
     
