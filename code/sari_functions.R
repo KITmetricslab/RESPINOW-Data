@@ -1,10 +1,73 @@
+#
+#Extract data in the specified format from the svg file
+#Week string determines the name of the file and the week/year
+get_data_from_svg <- function(svg, week_string){
+  # get ruler coordinates:
+  rulers <- get_rulers(tag = "style=\"fill:#e0e0e0;fill-opacity:1;fill-rule:nonzero;stroke:none\"", 
+                       svg = svg)
+  # read data from coloured lines:
+  data_list <- list()
+  
+  # red = 0-4
+  red_line <- get_line(tag = "fill:none;stroke:#ff0000", svg = svg)
+  data_list[["00-04"]] <- transform_line(line = red_line, rulers = rulers)
+  
+  # orange = 5-14
+  orange_line <- get_line(tag = "fill:none;stroke:#ff7f00", svg = svg)
+  data_list[["05-14"]] <- transform_line(line = orange_line, rulers = rulers)
+  
+  # yellow = 15-34
+  yellow_line <- get_line(tag = "fill:none;stroke:#ffd200", svg = svg)
+  data_list[["15-34"]] <- transform_line(line = yellow_line, rulers = rulers)
+  
+  # green = 35-59
+  green_line <- get_line(tag = "fill:none;stroke:#00b000", svg = svg)
+  data_list[["35-59"]] <- transform_line(line = green_line, rulers = rulers)
+  
+  # blue = 60-79
+  blue_line <- get_line(tag = "fill:none;stroke:#008bbc", svg = svg)
+  data_list[["60-79"]] <- transform_line(line = blue_line, rulers = rulers)
+  
+  # grey = 80 plus
+  grey_line <- get_line(tag = "fill:none;stroke:#808080", svg = svg)
+  data_list[["80+"]] <- transform_line(line = grey_line, rulers = rulers)
+  
+  # get date, week and year:
+  dates <- get_dates(tag_week = week_string, n_weeks = nrow(red_line))
+  
+  # assemble everything in one data.frame formatted the same way as the existing data in the repo:
+  data_frame <- NULL
+  
+  for(ag in names(data_list)){
+    dat_temp <- data.frame(date = dates$date,
+                           week = dates$week,
+                           location = "DE",
+                           age_group = rep(ag, nrow(dates)),
+                           value = data_list[[ag]][, "value"])
+    if(is.null(data_frame)){
+      data_frame <- dat_temp
+    }else{
+      data_frame <- rbind(data_frame, dat_temp)
+    }
+  }
+  
+  # add part with sum over all age groups:
+  to_add <- aggregate(value ~ week + location + date, data_frame, FUN = sum)
+  to_add$age_group <- "00+"
+  to_add <- to_add[ , colnames(data_frame)]
+  data_frame <- rbind(data_frame, to_add)
+  data_frame$value <- as.integer(round(data_frame$value))
+  return(data_frame)
+}
+
+
 # extract coordinates of a line from the document
 # tag: a code snippet to identify the line *before* the numbers to be extracted (done via colour)
 # svg: the svg object
 get_line <- function(tag, svg){
   # identify line:
   ind_line <- which(grepl(tag, svg))
-  line <- svg[ind_line + 1]
+  line <- svg[ind_line - 1]
   
   # remove everything which is not a number:
   line <- gsub("                 d=\"m ", "", x = line)
@@ -76,7 +139,7 @@ process_line_segment <- function(segment, end_previous_segment = NULL){
 get_rulers <- function(tag, svg, step = 100){
   # identify lines corresponding to rulers:
   inds_rulers <- which(grepl(tag, svg))
-  rulers <- svg[inds_rulers + 1]
+  rulers <- svg[inds_rulers - 1]
   
   # function to extract the coordinates fron these lines (x and y values of starting point):
   extract_coord_ruler <- function(txt){
