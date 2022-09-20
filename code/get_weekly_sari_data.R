@@ -1,3 +1,5 @@
+install.packages(c("pdftools", "stringr", "ISOweek", "lubridate"), dependencies = TRUE)
+
 library(pdftools)
 library(stringr)
 library(ISOweek)
