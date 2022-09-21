@@ -2,7 +2,7 @@ name: "get-SARI-data"
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 9,17 * * *"   
+    - cron: "0 16 * * 5"   
 
 jobs:
   get-SARI-data:
