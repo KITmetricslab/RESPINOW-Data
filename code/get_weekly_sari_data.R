@@ -25,7 +25,7 @@ current_week <- as.integer(substr(date_string,7,8))
 current_year <- as.integer(substr(date_string,1,4))
 
 #Fetch data for all missing weeks
-for (week in (latest_week+1):(current_week)){
+for (week in (latest_week+1):(current_week -2)){
   #Define week and year as string
   week_string <- paste0(current_year,"-",week)
   #Download latest file
