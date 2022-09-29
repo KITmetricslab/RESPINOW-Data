@@ -25,7 +25,9 @@ current_week <- as.integer(substr(date_string,7,8))
 current_year <- as.integer(substr(date_string,1,4))
 
 #Fetch data for all missing weeks
-for (week in (latest_week+1):(current_week -2)){
+for (week in (latest_week+1):(current_week)){
+  #Flag for exiting loop
+  flag <- FALSE
   #Define week and year as string
   week_string <- paste0(current_year,"-",week)
   #Download latest file
@@ -36,13 +38,18 @@ for (week in (latest_week+1):(current_week -2)){
                current_year,"/",current_year,"-", week,".pdf")
   file_name <- substr(url, start = nchar(url)-10, stop = nchar(url)-4)
   pdf_destination <- paste(file_path, file_name, ".pdf", sep = "")
+  
+  #Download file with exception handling
   tryCatch({
     download.file(url, pdf_destination, mode = "wb")
   },
   error = function(e) {
     print(paste("Week", week, "not available yet."))
-    break
+    flag <<- TRUE
   })
+  if(flag){
+    next
+  }
     
   #Save specific page
   pdf_page_destination <- paste0(file_path,"selected_page_", file_name, ".pdf")
