@@ -75,6 +75,8 @@ get_line <- function(tag, svg){
   line <- gsub("m ", "", x = line)
   line <- gsub("h ", "", x = line)
   line <- gsub("l ", "", x = line)
+  line <- gsub("\"", "", line)
+  
   
   # need to split at tags "H" and "L" and handle the segments separately
   # (H re-sets the horizontal coordinate to an absolute value;
