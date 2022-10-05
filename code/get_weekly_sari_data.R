@@ -28,14 +28,14 @@ current_year <- as.integer(substr(date_string,1,4))
 for (week in (latest_week+1):(current_week)){
   #Flag for exiting loop
   flag <- FALSE
-  #Define week and year as string
-  week_string <- paste0(current_year,"-",week)
   #Download latest file
   if (week < 10){
     week <- paste0(0, week)
   }
+  #Define week and year as string
+  week_string <- paste0(current_year,"-",week)
   url <- paste0("https://influenza.rki.de/Wochenberichte/",(current_year-1),"_",
-               current_year,"/",current_year,"-", week,".pdf")
+               current_year,"/", week_string,".pdf")
   file_name <- substr(url, start = nchar(url)-10, stop = nchar(url)-4)
   pdf_destination <- paste(file_path, file_name, ".pdf", sep = "")
   
