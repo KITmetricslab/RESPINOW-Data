@@ -1,4 +1,4 @@
-name: "survstat-reporting-triangles"
+name: "reporting-triangles-survstat"
 on:
   workflow_dispatch:
   schedule:
