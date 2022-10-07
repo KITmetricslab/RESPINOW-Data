@@ -9,7 +9,7 @@ library(lubridate)
 #Path to location of this file
 file_path <- "./code/"
 #Path to location of folder with csv
-csv_path <- "./data/SARI/"
+csv_path <- "./data/SARI/archive/"
 
 
 #Path to function file
