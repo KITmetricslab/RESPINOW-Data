@@ -1,7 +1,7 @@
 import pandas as pd
 
 for disease in ['seasonal_influenza', 'pneumococcal_disease', 'rsv_infection']:
-    df = pd.read_csv(f'../data/truth/truth_{disease}.csv')
+    df = pd.read_csv(f'../data/Survstat/{disease}_reporting_triangle_survstat.csv')
 
     for i, row in df.iterrows():
         to_subtract = 0
@@ -20,4 +20,4 @@ for disease in ['seasonal_influenza', 'pneumococcal_disease', 'rsv_infection']:
 
     df.sort_values(['location', 'age_group', 'date'], inplace = True)
 
-    df.to_csv(f'../data/truth/truth_{disease}_preprocessed.csv', index = False)
+    df.to_csv(f'../data/Survstat/{disease}_reporting_triangle_survstat_preprocessed.csv', index = False)
