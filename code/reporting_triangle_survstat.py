@@ -239,7 +239,7 @@ def compute_reporting_triangle(disease, max_delay=10):
 
     df = df.sort_values(['location', 'age_group', 'date'], ignore_index=True)
 
-    df.to_csv(f'../data/truth/truth_{disease.lower()}.csv', index=False)
+    df.to_csv(f'../data/Survstat/{disease.lower()}_reporting_triangle_survstat.csv', index=False)
 
 
 PATH = 'https://raw.githubusercontent.com/KITmetricslab/nowcasting-data/main/'
