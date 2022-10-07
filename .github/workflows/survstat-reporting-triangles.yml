@@ -1,4 +1,4 @@
-name: "compute-reporting-triangles"
+name: "survstat-reporting-triangles"
 on:
   workflow_dispatch:
   schedule:
@@ -23,7 +23,7 @@ jobs:
     - name: Create reporting triangle
       run:  |
         cd ./code
-        python3 ./reporting_triangle.py
+        python3 ./reporting_triangle_survstat.py
         python3 ./preprocess_reporting_triangle.py
         
     - name: Commit files
@@ -33,10 +33,10 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git remote rm origin
-        git remote add origin https://${AUTH}@github.com/KITmetricslab/RESPINOW-Hub.git > /dev/null 2>&1
+        git remote add origin https://${AUTH}@github.com/KITmetricslab/RESPINOW-Data.git > /dev/null 2>&1
         git pull origin main
         git add --all
-        git commit --allow-empty -m "Update reporting triangles"
+        git commit --allow-empty -m "Update reporting triangles (Survstat)"
         
     - name: Push changes
       run: |
