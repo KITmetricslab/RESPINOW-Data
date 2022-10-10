@@ -1,5 +1,4 @@
 pandas
 pathlib
-zipfile
 selenium
 webdriver_manager
