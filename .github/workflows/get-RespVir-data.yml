@@ -21,6 +21,8 @@ jobs:
         pip3 install -r .github/workflows/requirements_respvir.txt
              
     - name: Get data
+      env:
+        RESPVIR: ${{ secrets.RESPVIR }}
       run:  |
         cd ./code
         python3 ./get_respvir.py
