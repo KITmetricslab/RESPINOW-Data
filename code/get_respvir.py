@@ -10,7 +10,7 @@ def get_previous_sunday(date):
     return str((pd.to_datetime(date) - pd.Timedelta(days=((pd.to_datetime(date).dayofweek + 1) % 7))).date())
 
 url = 'https://uni-koeln.sciebo.de/s/fwiRFf2Ya9AxbxG'
-password = os.envrion('RESPVIR')
+password = os.environ('RESPVIR')
 
 path_loc = os.path.join(os.getcwd(), "temp")
 
