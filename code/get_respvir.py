@@ -39,6 +39,8 @@ password_field.submit()
 
 # check available dates
 files = driver.find_element("id", "fileList")
+print(files)
+print(files.text)
 dates_available = [f[-14:-4] for f in files.text.replace("\n", " ").split(" ") if f.startswith('filtered') and f.endswith('.zip')]
 sundays = [get_previous_sunday(d) for d in dates_available]
 date_dict = dict(zip(sundays, dates_available))
