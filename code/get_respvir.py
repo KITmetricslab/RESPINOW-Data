@@ -44,6 +44,9 @@ dir_URL = Path("../data/RespVir/influenza/")
 dates_processed = [file.name[:10] for file in dir_URL.glob("*.csv")]
 
 dates = [d for d in date_dict.keys() if d not in dates_processed]
+print(dates_available)
+print(sundays)
+print(dates_processed)
 print(dates)
 
 for d in dates:
