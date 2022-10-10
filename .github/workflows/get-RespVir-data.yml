@@ -1,0 +1,26 @@
+name: "get-RespVir-data"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * 1"
+  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@main
+
+    - name: Setup Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+
+    - name: Install requirements
+      run: |
+        pip3 install -r .github/workflows/requirements_respvir.txt
+             
+    - name: Get data
+      run:  |
+        cd ./code
+        python3 ./get_respvir.py
