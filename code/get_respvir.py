@@ -42,8 +42,6 @@ time.sleep(10)
 
 # check available dates
 files = driver.find_element("id", "fileList")
-print(files)
-print(files.text)
 dates_available = [f[-14:-4] for f in files.text.replace("\n", " ").split(" ") if f.startswith('filtered') and f.endswith('.zip')]
 sundays = [get_previous_sunday(d) for d in dates_available]
 date_dict = dict(zip(sundays, dates_available))
@@ -53,10 +51,6 @@ dir_URL = Path("../data/RespVir/influenza/")
 dates_processed = [file.name[:10] for file in dir_URL.glob("*.csv")]
 
 dates = [d for d in date_dict.keys() if d not in dates_processed]
-print(dates_available)
-print(sundays)
-print(dates_processed)
-print(dates)
 
 for d in dates:
     # download file
