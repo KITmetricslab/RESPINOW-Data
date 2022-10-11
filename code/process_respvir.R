@@ -8,7 +8,7 @@ library(ISOweek)
 Sys.setlocale("LC_ALL", "C")
 
 process_respvir <- function(df) {
-  df <- df_all %>%
+  df <- df %>%
     mutate(
       influenza = infasaisonpos == 2,
       rsv = rsvpos == 2,
