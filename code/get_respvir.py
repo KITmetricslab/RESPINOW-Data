@@ -1,4 +1,5 @@
 import os
+import time
 import pandas as pd
 from pathlib import Path
 from zipfile import ZipFile
@@ -30,7 +31,7 @@ options.add_argument('--disable-dev-shm-usage')
 options.add_argument('--disable-gpu')
 
 driver = Chrome(service=Service(ChromeDriverManager().install()), options=options)
-driver.implicitly_wait(20)
+time.sleep(15)
 driver.get(url)
 
 password_field = driver.find_element("name", "password")
