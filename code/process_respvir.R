@@ -1,3 +1,5 @@
+install.packages(c("runner", "lubridate", "ISOweek"), dependencies = TRUE)
+
 library(tidyverse)
 library(runner)
 library(lubridate)
@@ -73,7 +75,7 @@ df_influenza <- read_latest("influenza")
 df_rsv <- read_latest("rsv")
 df_pneumococcal <- read_latest("pneumococcal")
 
-files_new <- sort(list.files("data/RespVir/temp/", full.names = TRUE))
+files_new <- sort(list.files("code/temp/", pattern = "*respAll_filtered_\\d{4}-\\d{2}-\\d{2}.csv", full.names = TRUE))
 
 for (f in files_new) {
   print(paste0("Processing: ", basename(f)))
@@ -90,4 +92,4 @@ for (f in files_new) {
 }
 
 print("Deleting raw files...")
-unlink("data/RespVir/temp", recursive = TRUE)
+unlink("code/temp", recursive = TRUE)
