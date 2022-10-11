@@ -5,6 +5,9 @@ from zipfile import ZipFile
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+import chromedriver_autoinstaller
+
+chromedriver_autoinstaller.install() 
 
 def get_previous_sunday(date):
     return str((pd.to_datetime(date) - pd.Timedelta(days=((pd.to_datetime(date).dayofweek + 1) % 7))).date())
