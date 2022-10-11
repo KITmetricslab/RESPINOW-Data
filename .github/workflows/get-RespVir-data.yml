@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@main
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get install libcurl4-openssl-dev
 
     - name: Setup Python
       uses: actions/setup-python@v3
