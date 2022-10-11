@@ -31,12 +31,15 @@ options.add_argument('--disable-dev-shm-usage')
 options.add_argument('--disable-gpu')
 
 driver = Chrome(service=Service(ChromeDriverManager().install()), options=options)
-time.sleep(15)
 driver.get(url)
+
+time.sleep(30)
 
 password_field = driver.find_element("name", "password")
 password_field.send_keys(password)
 password_field.submit()
+
+time.sleep(30)
 
 # check available dates
 files = driver.find_element("id", "fileList")
