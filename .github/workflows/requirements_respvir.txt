@@ -2,3 +2,4 @@ pandas
 pathlib
 selenium
 webdriver_manager
+chromedriver-autoinstaller
