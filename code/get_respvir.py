@@ -26,20 +26,20 @@ chrome_prefs = {
 options.add_experimental_option("prefs", chrome_prefs)
 options.add_argument("--headless")
 
-options.add_argument('--no-sandbox')
-options.add_argument('--disable-dev-shm-usage')
-options.add_argument('--disable-gpu')
+#options.add_argument('--no-sandbox')
+#options.add_argument('--disable-dev-shm-usage')
+#options.add_argument('--disable-gpu')
 
 driver = Chrome(service=Service(ChromeDriverManager().install()), options=options)
 driver.get(url)
 
-time.sleep(30)
+time.sleep(10)
 
 password_field = driver.find_element("name", "password")
 password_field.send_keys(password)
 password_field.submit()
 
-time.sleep(30)
+time.sleep(10)
 
 # check available dates
 files = driver.find_element("id", "fileList")
