@@ -2,7 +2,7 @@ name: "get-RespVir-data"
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 4 * * 1"
+  #  - cron: "0 4 * * 1"
   
 
 jobs:
@@ -19,6 +19,11 @@ jobs:
     - name: Install requirements
       run: |
         pip3 install -r .github/workflows/requirements_respvir.txt
+        
+    - name: Setup R
+      uses: r-lib/actions/setup-r@v2
+      with:
+          r-version: 4.1.0
              
     - name: Get data
       env:
@@ -26,3 +31,5 @@ jobs:
       run:  |
         cd ./code
         python3 ./get_respvir.py
+        cd ..
+        Rscript code/process_respvir.R
