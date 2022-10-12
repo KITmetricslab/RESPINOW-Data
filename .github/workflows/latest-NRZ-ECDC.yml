@@ -1,8 +1,8 @@
 name: "latest-NRZ-ECDC"
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 9,17 * * *"   
+  #schedule:
+  #  - cron: "0 9,17 * * *"   
 
 jobs:
   latest-NRZ-ECDC:
