@@ -257,7 +257,7 @@ create_csv <- function(year, week, url, file_path, n_weeks = 52){
       year_list <- c(rep((year-1),split_length),rep(year,(n_weeks-split_length)))
     }else{
       week_cutoff <- week_int - (40-1)
-      year_list <- c(rep(year,split_length),rep((year+1),(n_weeks-split_length)))
+      year_list <- c(rep((year - 1),split_length),rep(year,(n_weeks-split_length)))
     }
     
     new_data <- cbind(year_list[1:week_cutoff],week_list[1:week_cutoff],

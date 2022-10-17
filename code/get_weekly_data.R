@@ -6,6 +6,9 @@ source("analyze_images.R")
 date_string <- date2ISOweek(Sys.Date())
 current_week <- substr(date_string,7,8)
 current_year <- as.integer(substr(date_string,1,4))
+if (current_week >= 40){
+  current_year <- current_year+1
+}
 
 #List of urls
 urls <- list("Influenza-NRZ-Nachweise" = "VirusDetections",
