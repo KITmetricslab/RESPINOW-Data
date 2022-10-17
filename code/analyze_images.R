@@ -226,12 +226,12 @@ date_in_week <- function(year, week, weekday = 7){
 #' @param week The given week
 #' @param file_path The path to the data folder
 #' @param n_weeks The number of IsoWeeks the current year has
-create_csv <- function(year, week, url, file_path, n_weeks = 52){
+create_csv <- function(year, week, url, file_path, week_string, n_weeks = 52){
   #Pre work
   week_int <- as.integer(week)
   week_list <- sapply(c(40:n_weeks,1:39), FUN = convert_to_string)
   split_length <- n_weeks - 39
-  file_name <- paste(date_in_week(year,week,7), "_", output_names[url], sep = "")
+  file_name <- paste(week_string, "_", output_names[url], sep = "")
   
   # Check disease, RSV does not have data for county DE
   if (substr(url,1,3) == "RSV"){

@@ -6,6 +6,10 @@ source("analyze_images.R")
 date_string <- date2ISOweek(Sys.Date())
 current_week <- substr(date_string,7,8)
 current_year <- as.integer(substr(date_string,1,4))
+
+#Create week string
+week_string <- paste(date_in_week(current_year,current_week,7))
+
 if (current_week >= 40){
   current_year <- current_year+1
 }
@@ -44,7 +48,7 @@ file_path <- "../data/NRZ/"
 
 #Create CSVs for the different images
 for (url in urls){
-  create_csv(current_year, current_week, url, file_path)
+  create_csv(current_year, current_week, url, file_path, week_string)
 }
 
 
