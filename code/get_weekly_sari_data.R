@@ -24,6 +24,13 @@ date_string <- date2ISOweek(Sys.Date())
 current_week <- as.integer(substr(date_string,7,8))
 current_year <- as.integer(substr(date_string,1,4))
 
+#Prepare season year
+if (current_week >= 40){
+  season_year <- current_year+1
+}else{
+  season_year <- current_year
+}
+
 #Fetch data for all missing weeks
 for (week in (latest_week+1):(current_week)){
   #Flag for exiting loop
@@ -34,8 +41,8 @@ for (week in (latest_week+1):(current_week)){
   }
   #Define week and year as string
   week_string <- paste0(current_year,"-",week)
-  url <- paste0("https://influenza.rki.de/Wochenberichte/",(current_year-1),"_",
-               current_year,"/", week_string,".pdf")
+  url <- paste0("https://influenza.rki.de/Wochenberichte/",(season_year-1),"_",
+                season_year,"/", week_string,".pdf")
   file_name <- substr(url, start = nchar(url)-10, stop = nchar(url)-4)
   pdf_destination <- paste(file_path, file_name, ".pdf", sep = "")
   
