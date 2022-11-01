@@ -5,17 +5,29 @@ library(runner)
 library(lubridate)
 library(ISOweek)
 
-Sys.setlocale("LC_ALL", "C")
+read_aggregated <- function(path = temp_path) {
+  file <- grep("aggregated.csv", list.files(path), value = TRUE)
+  read_csv(paste0(path, file), show_col_types = FALSE)
+}
 
-process_respvir <- function(df) {
+get_date <- function(path = temp_path){
+  file <- grep("aggregated.csv", list.files(path), value = TRUE)
+  substr(file, 1, 10)
+}
+
+#Function to transform the data
+transform_data <- function(df){
+  #Filter df to three diseases
   df <- df %>%
     mutate(
       influenza = infasaisonpos == 2,
       rsv = rsvpos == 2,
-      pneumococcal = bakstrepos == 2
+      pneumococcal = bakstrepos == 2,
     ) %>%
-    select(c(date, influenza, rsv, pneumococcal))
-
+    select(c(date, influenza, rsv, pneumococcal)
+    )
+  
+  #Aggregate
   df <- df %>%
     group_by(date) %>%
     summarize(
@@ -23,73 +35,54 @@ process_respvir <- function(df) {
       rsv = sum(rsv),
       pneumococcal = sum(pneumococcal)
     )
-
+  
+  #Pivot
   df <- df %>%
     pivot_longer(
       cols = c(influenza, rsv, pneumococcal),
       names_to = "disease",
       values_to = "value"
     )
-
-  df <- df %>%
-    group_by(disease) %>%
-    mutate(
-      value = runner(value,
-        k = "7 days",
-        idx = date,
-        f = function(x) sum(x)
-      ),
-      weekday = wday(date, label = TRUE)
-    ) %>%
-    filter(weekday == "Sun")
-
-  df <- df %>%
-    ungroup() %>%
-    select(date, disease, value)
-
+  
+  #Format
   df <- df %>%
     mutate(
       location = "DE",
       age_group = "00+"
     )
+  return(df)
 }
 
-read_latest <- function(disease = "influenza") {
-  files <- list.files(paste0("data/RespVir/", disease), full.names = TRUE)
-  latest_file <- max(files)
-  read_csv(latest_file, show_col_types = FALSE)
-}
 
-update_timeseries <- function(df_old, df_new, disease = "influenza") {
-  df_new %>%
+
+#Path to csv
+temp_path <- "temp/"
+csv_path <- ""
+
+#Disease vector
+diseases <- c("influenza", "rsv", "pneumococcal")
+
+#Get data and date for new file
+data_aggregated <- read_aggregated()
+date <- get_date()
+
+#Transform data
+data_transformed <- transform_data(data_aggregated)
+
+#Obtain the time series
+for (disease in diseases){
+  df_filtered <- data_transformed %>%
     filter(disease == !!disease) %>%
-    select(-disease) %>%
-    bind_rows(df_old) %>%
-    group_by(date, location, age_group) %>%
-    summarize(value = sum(value)) %>%
-    ungroup()
+    mutate(week = week(date)) %>%
+    select(date, week, location, age_group, value)
+  
+  path_ts <- paste0(csv_path, disease, "/", date, "_respvir_", disease,  ".csv")
+  write_csv(df_filtered, path_ts)
 }
 
-
-df_influenza <- read_latest("influenza")
-df_rsv <- read_latest("rsv")
-df_pneumococcal <- read_latest("pneumococcal")
-
-files_new <- sort(list.files("code/temp/", pattern = "*respAll_filtered_\\d{4}-\\d{2}-\\d{2}.csv", full.names = TRUE))
-
-for (f in files_new) {
-  print(paste0("Processing: ", basename(f)))
-  df_new <- read_csv(max(files_new)) %>%
-    process_respvir()
-
-  df_influenza <- update_timeseries(df_influenza, df_new, "influenza")
-  df_rsv <- update_timeseries(df_rsv, df_new, "rsv")
-  df_pneumococcal <- update_timeseries(df_pneumococcal, df_new, "pneumococcal")
-
-  write_csv(df_influenza, paste0("data/RespVir/influenza/", max(df_influenza$date), "_respvir_influenza.csv"))
-  write_csv(df_rsv, paste0("data/RespVir/rsv/", max(df_rsv$date), "_respvir_rsv.csv"))
-  write_csv(df_pneumococcal, paste0("data/RespVir/pneumococcal/", max(df_pneumococcal$date), "_respvir_pneumococcal.csv"))
-}
-
+#Delete used files
 print("Deleting raw files...")
-unlink("code/temp", recursive = TRUE)
+unlink("temp", recursive = TRUE)
+
+  
+
