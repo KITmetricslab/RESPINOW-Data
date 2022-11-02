@@ -4,6 +4,8 @@ import pandas as pd
 from pathlib import Path
 from zipfile import ZipFile
 from selenium.webdriver import Chrome, ChromeOptions
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 # Function for merging dfs
@@ -40,7 +42,7 @@ options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
 options.add_argument('--disable-gpu')
 
-driver = Chrome(executable_path=r"", options=options) # Need to specify path for Chromedriver
+driver = Chrome(service=Service(ChromeDriverManager().install()), options=options)
 driver.get(url)
 
 time.sleep(10)
