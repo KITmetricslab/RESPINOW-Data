@@ -57,7 +57,7 @@ transform_data <- function(df){
 
 #Path to csv
 temp_path <- "temp/"
-csv_path <- ""
+csv_path <- "./data/RespVir/"
 
 #Disease vector
 diseases <- c("influenza", "rsv", "pneumococcal")
