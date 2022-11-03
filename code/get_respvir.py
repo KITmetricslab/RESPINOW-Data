@@ -70,7 +70,7 @@ if (dates_processed[-1] == new_dates[-1]):
     print("Repository already up to date!")
 else:
     # Download all files
-    for d in dates:
+    for d in new_dates:
         # download file
         print(f"Downloading file: filtered_{d}.zip")
         file_url = f'https://uni-koeln.sciebo.de/s/fwiRFf2Ya9AxbxG/download?path=%2F&files=filtered_{d}.zip'
@@ -90,11 +90,11 @@ else:
     cols = ["respId", "patId", "dt", "date", "infasaisonpos", "rsvpos", "bakstrepos"]
     merged_df = base_df[cols]
 
-    for date in dates:
+    for date in new_dates:
         new_file = "temp/respAll_filtered_{}.csv".format(date)
         new_df = pd.read_csv(new_file)
         # Filter data on newest change date
         new_df = new_df[new_df["dt"] >= base_date]
         new_df = new_df[cols]
         merged_df = merge_new_data(merged_df, new_df)
-        merged_df.to_csv("temp/{}_aggregated.csv".format(date), index=False)
+    merged_df.to_csv("temp/{}_aggregated.csv".format(date), index=False)
