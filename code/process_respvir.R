@@ -56,8 +56,8 @@ transform_data <- function(df){
 
 
 #Path to csv
-temp_path <- "temp/"
-csv_path <- "./data/RespVir/"
+temp_path <- "code/temp/"
+csv_path <- "data/RespVir/"
 
 #Disease vector
 diseases <- c("influenza", "rsv", "pneumococcal")
@@ -82,7 +82,7 @@ for (disease in diseases){
 
 #Delete used files
 print("Deleting raw files...")
-unlink("temp", recursive = TRUE)
+unlink("code/temp", recursive = TRUE)
 
   
 
