@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from webdriver_manager.chrome import ChromeDriverManager
 
 #Set correct paths for github
 current_path = os.getcwd()
@@ -39,7 +40,7 @@ options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
 options.add_argument('--disable-gpu')
 
-driver = Chrome(executable_path=r"chromedriver.exe", options=options)
+driver = Chrome(service=Service(ChromeDriverManager().install()), options=options)
 driver.get(url)
 wait = WebDriverWait(driver, 10)
 #Wait for website to load
