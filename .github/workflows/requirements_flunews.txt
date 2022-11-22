@@ -1,5 +1,4 @@
 pandas
-pathlib
 selenium
 packaging
 webdriver_manager
