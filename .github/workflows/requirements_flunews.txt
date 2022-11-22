@@ -1,6 +1,6 @@
 pandas
 openpyxl
-selenium == 4.6.0
+selenium
 packaging
 webdriver_manager
 chromedriver-autoinstaller
