@@ -41,7 +41,7 @@ options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
 options.add_argument('--disable-gpu')
 
-driver = Chrome(service=Service(ChromeDriverManager().install()), options=options)
+driver = Chrome()#Chrome(service=Service(ChromeDriverManager().install()), options=options)
 driver.get(url)
 wait = WebDriverWait(driver, 10)
 #Wait for website to load
