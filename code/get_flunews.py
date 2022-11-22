@@ -47,7 +47,7 @@ wait = WebDriverWait(driver, 10)
 time.sleep(7)
 
 # Select country
-country_selector = driver.find_element_by_xpath("/html/body/div[2]/div/div[3]/div[5]/div[1]/div/article/div[1]/div/div/qv-filterpane/div[3]/div/div")
+country_selector = driver.find_element(By.XPATH, "/html/body/div[2]/div/div[3]/div[5]/div[1]/div/article/div[1]/div/div/qv-filterpane/div[3]/div/div")
 country_selector.click()
 entry_path = "/html/body/div[5]/div/div/div/ng-transclude/div/div[3]/div/article/div[1]/div/div/div/div[1]/div/input"
 country_query = "Germany"+Keys.ENTER
@@ -55,7 +55,7 @@ wait.until(EC.presence_of_element_located((By.XPATH, entry_path))).send_keys(cou
 time.sleep(1)
 
 #Select season
-season_selector = driver.find_element_by_xpath("/html/body/div[2]/div/div[3]/div[5]/div[1]/div/article/div[1]/div/div/qv-filterpane/div[1]/div/div")
+season_selector = driver.find_element(By.XPATH, "/html/body/div[2]/div/div[3]/div[5]/div[1]/div/article/div[1]/div/div/qv-filterpane/div[1]/div/div")
 season_selector.click()
 entry_path = "/html/body/div[5]/div/div/div/ng-transclude/div/div[3]/div/article/div[1]/div/div/div/div[1]/div/input"
 season_entry = wait.until(EC.presence_of_element_located((By.XPATH, entry_path)))
@@ -64,7 +64,7 @@ for season in seasons:
     time.sleep(1)
 
 #Download file
-download_button = driver.find_element_by_xpath("//*[@id=\"export_chart_1_csv\"]")
+download_button = driver.find_element(By.XPATH, "//*[@id=\"export_chart_1_csv\"]")
 download_button.send_keys(Keys.ENTER)
 time.sleep(3)
 
