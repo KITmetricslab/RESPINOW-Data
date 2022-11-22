@@ -30,7 +30,7 @@ chrome_prefs = {
     "plugins.always_open_pdf_externally": True,
     "download.open_pdf_in_system_reader": False,
     "profile.default_content_settings.popups": 0,
-    "download.default_directory": current_path
+    "download.default_directory": folder_path
 }
 options.add_experimental_option("prefs", chrome_prefs)
 options.add_argument('--window-size=1920,1080')
@@ -68,7 +68,7 @@ download_button.send_keys(Keys.ENTER)
 time.sleep(3)
 
 #Load csv file
-csv_file = list(filter(lambda f: f.endswith("xlsx"),os.listdir(current_path)))[0]
+csv_file = list(filter(lambda f: f.endswith("xlsx"),os.listdir(folder_path)))[0]
 csv_path = folder_path + csv_file
 
 data = pd.read_excel(csv_path)
