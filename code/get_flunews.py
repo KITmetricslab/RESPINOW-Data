@@ -70,10 +70,8 @@ download_button.send_keys(Keys.ENTER)
 time.sleep(3)
 
 #Load csv file
-print(download_path)
-print(os.listdir(download_path))
 csv_file = list(filter(lambda f: f.endswith("xlsx"),os.listdir(download_path)))[0]
-csv_path = download_path + csv_file
+csv_path = download_path + "/" + csv_file
 
 data = pd.read_excel(csv_path)
 data = data.loc[data["Country"] == "Germany"]
