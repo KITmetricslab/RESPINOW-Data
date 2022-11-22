@@ -1,4 +1,5 @@
 pandas
+openpyxl
 selenium
 packaging
 webdriver_manager
