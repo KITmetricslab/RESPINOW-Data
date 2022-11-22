@@ -45,7 +45,7 @@ driver = Chrome(service=Service(ChromeDriverManager().install()), options=option
 driver.get(url)
 wait = WebDriverWait(driver, 10)
 #Wait for website to load
-time.sleep(7)
+time.sleep(15)
 
 # Select country
 country_selector = driver.find_element(By.XPATH, "/html/body/div[2]/div/div[3]/div[5]/div[1]/div/article/div[1]/div/div/qv-filterpane/div[3]/div/div")
