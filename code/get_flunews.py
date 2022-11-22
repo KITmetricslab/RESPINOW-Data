@@ -9,14 +9,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
 
-#Set correct paths for github
-current_path = os.getcwd()
-output_path = os.getcwd() + "/"
+#Specify path to FluNews folder
+folder_path = "../data/FluNewsEurope/"
 
 #Get current date and output filename
 iso_date = datetime.now().isocalendar()
 file_name = f"SARI-{iso_date[0]}-{iso_date[1]}.csv"
-file_path = output_path + file_name
+file_path = folder_path + file_name
 
 #Website URL
 url = 'https://flunewseurope.org/HospitalData/SARI'
@@ -70,7 +69,7 @@ time.sleep(3)
 
 #Load csv file
 csv_file = list(filter(lambda f: f.endswith("xlsx"),os.listdir(current_path)))[0]
-csv_path = current_path + "/" + csv_file
+csv_path = folder_path + csv_file
 
 data = pd.read_excel(csv_path)
 data = data.loc[data["Country"] == "Germany"]
