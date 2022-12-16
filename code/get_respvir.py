@@ -91,7 +91,7 @@ else:
     cols = ["respId", "patId", "dt", "date", "infasaisonpos", "rsvpos", "bakstrepos"]
     merged_df = base_df[cols]
 
-    for date in new_dates:
+    for date in dates:
         new_file = "temp/respAll_filtered_{}.csv".format(date)
         new_df = pd.read_csv(new_file)
         # Filter data on newest change date
