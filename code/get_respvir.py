@@ -98,4 +98,4 @@ else:
         new_df = new_df[new_df["dt"] >= base_date]
         new_df = new_df[cols]
         merged_df = merge_new_data(merged_df, new_df)
-    merged_df.to_csv("temp/{}_aggregated.csv".format(date), index=False)
+        merged_df.to_csv("temp/{}_aggregated.csv".format(date), index=False)
