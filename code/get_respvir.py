@@ -49,7 +49,7 @@ time.sleep(10)
 password_field = driver.find_element("name", "password")
 password_field.send_keys(password)
 password_field.submit()
-time.sleep(10)
+time.sleep(30)
 
 # check available dates
 files = driver.find_element("id", "fileList")
