@@ -56,6 +56,11 @@ time.sleep(30)
 files = driver.find_element("id", "fileList")
 dates_available = [f[-14:-4] for f in files.text.replace("\n", " ").split(" ") if
                    f.startswith('filtered') and f.endswith('.zip')]
+
+#Show available files
+print(f"Available files: {files}")
+print(f"Available dates: {dates_available}")
+
 # Get base file and new files
 base_index = 1
 base_date = dates_available[base_index]
