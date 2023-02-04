@@ -72,6 +72,9 @@ dir_URL = Path("../data/RespVir/influenza/")
 dates_processed = [file.name[:10] for file in dir_URL.glob("*.csv")]
 dates = [d for d in new_dates if d not in dates_processed]
 
+print(dates_processed)
+print(new_dates)
+
 if (dates_processed[-1] == new_dates[-1]):
     print("Repository already up to date!")
 else:
