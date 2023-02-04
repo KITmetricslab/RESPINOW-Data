@@ -60,7 +60,7 @@ temp_path <- "code/temp/"
 csv_path <- "data/RespVir/"
 
 #Print available files
-print(list.files(path))
+print(list.files(temp_path))
 
 #Disease vector
 diseases <- c("influenza", "rsv", "pneumococcal")
