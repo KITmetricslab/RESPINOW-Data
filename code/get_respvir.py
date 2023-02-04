@@ -75,7 +75,7 @@ dates = [d for d in new_dates if d not in dates_processed]
 print(dates_processed)
 print(new_dates)
 
-if (dates_processed[-1] == new_dates[-1]):
+if (new_dates[-1] in dates_processed):
     print("Repository already up to date!")
 else:
     # Download all files
