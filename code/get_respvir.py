@@ -1,5 +1,6 @@
 import os
 import time
+from datetime import datetime, date, timedelta
 import pandas as pd
 from pathlib import Path
 from zipfile import ZipFile
@@ -64,22 +65,37 @@ print(f"Available dates: {dates_available}")
 # Get base file and new files
 base_index = 1
 base_date = dates_available[base_index]
-new_dates = dates_available[base_index:]
-
 
 # Check if newest file is already processed
 dir_URL = Path("../data/RespVir/influenza/")
 dates_processed = [file.name[:10] for file in dir_URL.glob("*.csv")]
-dates = [d for d in new_dates if d not in dates_processed]
+last_available_date = datetime.strptime(dates_processed[-1], "%Y-%m-%d").date()
+date_today = date.today()
+delta_days = date_today - last_available_date
 
+#Define possible new dates
+possible_dates = [(last_available_date + timedelta(days = x)).strftime("%Y-%m-%d") for x in range(1,delta_days.days+1)]
 print(dates_processed)
-print(new_dates)
 
-if (new_dates[-1] in dates_processed):
+#Check if some file exists
+new_dates = []
+for d in possible_dates:
+    print(f"Checking url: filtered_{d}.zip")
+    file_url = f'https://uni-koeln.sciebo.de/s/fwiRFf2Ya9AxbxG/download?path=%2F&files=filtered_{d}.zip'
+    driver.get(file_url)
+    time.sleep(5)
+    if os.path.isfile(f"temp/filtered_{d}.zip"):
+        new_dates.append(d)
+        print(f"File found {d}")
+
+#If empty repo is up to date
+if (bool(new_dates) == False):
     print("Repository already up to date!")
 else:
+    #Add found files to file list
+    dates_processed.extend(new_dates)
     # Download all files
-    for d in new_dates:
+    for d in dates_processed:
         # download file
         print(f"Downloading file: filtered_{d}.zip")
         file_url = f'https://uni-koeln.sciebo.de/s/fwiRFf2Ya9AxbxG/download?path=%2F&files=filtered_{d}.zip'
@@ -99,11 +115,11 @@ else:
     cols = ["respId", "patId", "dt", "date", "infasaisonpos", "rsvpos", "bakstrepos"]
     merged_df = base_df[cols]
 
-    for date in dates:
+    for date in dates_processed:
         new_file = "temp/respAll_filtered_{}.csv".format(date)
         new_df = pd.read_csv(new_file)
         # Filter data on newest change date
         new_df = new_df[new_df["dt"] >= base_date]
         new_df = new_df[cols]
         merged_df = merge_new_data(merged_df, new_df)
-        merged_df.to_csv("temp/{}_aggregated.csv".format(date), index=False)
+    merged_df.to_csv("temp/{}_aggregated.csv".format(date), index=False)
