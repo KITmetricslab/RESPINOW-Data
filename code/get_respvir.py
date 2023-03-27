@@ -58,10 +58,6 @@ files = driver.find_element("id", "fileList")
 dates_available = [f[-14:-4] for f in files.text.replace("\n", " ").split(" ") if
                    f.startswith('filtered') and f.endswith('.zip')]
 
-#Show available files
-print(f"Available files: {files}")
-print(f"Available dates: {dates_available}")
-
 # Get base file and new files
 base_index = 1
 base_date = dates_available[base_index]
@@ -73,9 +69,13 @@ last_available_date = datetime.strptime(dates_processed[-1], "%Y-%m-%d").date()
 date_today = date.today()
 delta_days = date_today - last_available_date
 
+#Print
+print(dates_processed)
+print(last_avialable_date)
+
 #Define possible new dates
 possible_dates = [(last_available_date + timedelta(days = x)).strftime("%Y-%m-%d") for x in range(1,delta_days.days+1)]
-print(dates_processed)
+
 
 #Check if some file exists
 new_dates = []
