@@ -64,14 +64,14 @@ base_date = dates_available[base_index]
 
 # Check if newest file is already processed
 dir_URL = Path("../data/RespVir/influenza/")
-dates_processed = [file.name[:10] for file in dir_URL.glob("*.csv")]
+dates_processed = [file.name[:10] for file in dir_URL.glob("*.csv")].sort()
 last_available_date = datetime.strptime(dates_processed[-1], "%Y-%m-%d").date()
 date_today = date.today()
 delta_days = date_today - last_available_date
 
 #Print
 print(dates_processed)
-print(last_avialable_date)
+print(last_available_date)
 
 #Define possible new dates
 possible_dates = [(last_available_date + timedelta(days = x)).strftime("%Y-%m-%d") for x in range(1,delta_days.days+1)]
