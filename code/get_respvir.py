@@ -64,7 +64,8 @@ base_date = dates_available[base_index]
 
 # Check if newest file is already processed
 dir_URL = Path("../data/RespVir/influenza/")
-dates_processed = [file.name[:10] for file in dir_URL.glob("*.csv")].sort()
+dates_processed = [file.name[:10] for file in dir_URL.glob("*.csv")]
+dates_processed.sort()
 last_available_date = datetime.strptime(dates_processed[-1], "%Y-%m-%d").date()
 date_today = date.today()
 delta_days = date_today - last_available_date
