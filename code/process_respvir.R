@@ -1,5 +1,4 @@
-install.packages(c("ragg", "runner", "lubridate", "ISOweek"))
-install.packages("tidyverse", dependencies = TRUE)
+install.packages(c("tidyverse", "runner", "lubridate", "ISOweek"))
 
 library(tidyverse)
 library(runner)
