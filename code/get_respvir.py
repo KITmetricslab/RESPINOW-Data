@@ -70,9 +70,6 @@ last_available_date = datetime.strptime(dates_processed[-1], "%Y-%m-%d").date()
 date_today = date.today()
 delta_days = date_today - last_available_date
 
-#Print
-print(dates_processed)
-print(last_available_date)
 
 #Define possible new dates
 possible_dates = [(last_available_date + timedelta(days = x)).strftime("%Y-%m-%d") for x in range(1,delta_days.days+1)]
@@ -84,11 +81,16 @@ for d in possible_dates:
     print(f"Checking url: filtered_{d}.zip")
     file_url = f'https://uni-koeln.sciebo.de/s/fwiRFf2Ya9AxbxG/download?path=%2F&files=filtered_{d}.zip'
     driver.get(file_url)
-    time.sleep(5)
+    time.sleep(10)
     if os.path.isfile(f"temp/filtered_{d}.zip"):
         new_dates.append(d)
         print(f"File found {d}")
 
+print(os.path)
+print(path_loc)
+onlyfiles = [f for f in listdir(path_loc)]
+print(onlyfiles)
+        
 #If empty repo is up to date
 if (bool(new_dates) == False):
     print("Repository already up to date!")
