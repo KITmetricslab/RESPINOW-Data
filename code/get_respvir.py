@@ -86,9 +86,8 @@ for d in possible_dates:
         new_dates.append(d)
         print(f"File found {d}")
 
-print(os.path)
 print(path_loc)
-onlyfiles = [f for f in listdir(path_loc)]
+onlyfiles = [f for f in os.listdir(path_loc)]
 print(onlyfiles)
 
 print(test)
