@@ -90,6 +90,8 @@ print(os.path)
 print(path_loc)
 onlyfiles = [f for f in listdir(path_loc)]
 print(onlyfiles)
+
+print(test)
         
 #If empty repo is up to date
 if (bool(new_dates) == False):
