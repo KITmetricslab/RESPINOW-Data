@@ -85,10 +85,6 @@ for d in possible_dates:
     if os.path.isfile(f"temp/filtered_{d}.zip"):
         new_dates.append(d)
         print(f"File found {d}")
-
-print(path_loc)
-onlyfiles = [f for f in os.listdir(path_loc)]
-print(onlyfiles)
         
 #If empty repo is up to date
 if (bool(new_dates) == False):
