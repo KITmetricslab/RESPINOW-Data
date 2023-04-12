@@ -1,0 +1,1 @@
+This folder contains reporting triangles and time series on seasonal influenza, RSV and pneumococcal disease based on the [RKI SurvStat] system. Data snapshots are collected in [this repository](https://github.com/KITmetricslab/nowcasting-data).
