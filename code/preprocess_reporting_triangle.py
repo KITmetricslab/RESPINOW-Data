@@ -5,7 +5,7 @@ for disease in ['seasonal_influenza', 'pneumococcal_disease', 'rsv_infection']:
 
     for i, row in df.iterrows():
         to_subtract = 0
-        for j, value in row[:4:-1].iteritems():
+        for j, value in row[:4:-1].items():
             value += to_subtract
             if value < 0:
                 to_subtract = value
