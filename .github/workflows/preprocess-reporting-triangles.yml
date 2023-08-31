@@ -1,0 +1,43 @@
+name: "preprocess-reporting-triangles"
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: "0 4 * * 1"
+  
+
+jobs:
+  preprocess-reporting-triangles:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@main
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install requirements
+      run: |
+        pip install pandas pathlib
+             
+    - name: Create reporting triangle
+      run:  |
+        cd ./code
+        python ./preprocess_reporting_triangles.py
+        
+    - name: Commit files
+      env:
+        AUTH: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git remote rm origin
+        git remote add origin https://${AUTH}@github.com/KITmetricslab/RESPINOW-Hub.git > /dev/null 2>&1
+        git pull origin main
+        git add --all
+        git commit --allow-empty -m "Preprocess reporting triangles"
+        
+    - name: Push changes
+      run: |
+        git push --quiet --set-upstream origin HEAD:main
+        echo "pushed to github"
