@@ -20,7 +20,7 @@ jobs:
       run: |
         pip install pandas pathlib
              
-    - name: Create reporting triangle
+    - name: Preprocess reporting triangle
       run:  |
         cd ./code
         python ./preprocess_reporting_triangles.py
