@@ -158,7 +158,7 @@ DISEASE_DICT = {
 }
 
 
-for disease in disease_dict.keys():
+for disease in DISEASE_DICT.keys():
     print("____________________")
     print(disease)
     df_files = list_all_files(disease)
