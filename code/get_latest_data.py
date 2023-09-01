@@ -3,7 +3,8 @@ from pathlib import Path
 
 source_dict = {
     'SARI' : ['archive'],
-    'NRZ' : ['influenza', 'rsv']
+    'NRZ' : ['influenza', 'rsv'],
+    'Survstat' : ['influenza', 'rsv', 'pneumococcal']
 }
 
 # to fix typos in sari files
@@ -23,10 +24,11 @@ for source in source_dict.keys():
             files = sorted([f for f in path.rglob('*.csv') if 'test' not in f.name])
         elif source == 'NRZ':
             files = sorted([f for f in path.rglob('*.csv') if 'VirusDetections' in f.name])
+        elif source == 'Survstat':
+            files = sorted([f for f in path.rglob('*.csv')])
             
         df = pd.read_csv(files[0])
-        
-        # we concat the new and the current file and then drop duplicate entries (keeping the one from the new file)
+
         for f in files[1:]:
             df_new = pd.read_csv(f)
             df_new.age_group = df_new.age_group.replace(age_dict) # fix typos
