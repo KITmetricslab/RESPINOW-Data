@@ -47,6 +47,8 @@ def list_all_files(disease):
 
     # only keep latest file per week
     df_files = df_files.sort_values('date').groupby(['iso_year', 'iso_week']).tail(1).reset_index(drop=True)
+    
+    df_files = df_files[df_files.date >= "2022-07-24"]
 
     return df_files
 
