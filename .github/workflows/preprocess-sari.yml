@@ -18,7 +18,7 @@ jobs:
 
     - name: Install requirements
       run: |
-        pip install os pandas epiweeks
+        pip install pandas epiweeks
              
     - name: Preprocess SARI data
       run:  |
