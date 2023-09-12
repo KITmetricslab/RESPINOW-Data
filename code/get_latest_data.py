@@ -7,12 +7,6 @@ source_dict = {
     'Survstat' : ['influenza', 'rsv', 'pneumococcal']
 }
 
-# to fix typos in sari files
-age_dict = {
-    '+00' : '00+',
-    '+80' : '80+'
-}
-
 for source in source_dict.keys():
     print(source)
     
@@ -31,7 +25,6 @@ for source in source_dict.keys():
 
         for f in files[1:]:
             df_new = pd.read_csv(f)
-            df_new.age_group = df_new.age_group.replace(age_dict) # fix typos
             df = pd.concat([df_new, df]).drop_duplicates(subset=['date', 'week', 'location', 'age_group'])
         
         df = df.sort_values(['location', 'age_group', 'date'])
