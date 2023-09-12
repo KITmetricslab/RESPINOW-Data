@@ -18,7 +18,12 @@ jobs:
 
     - name: Install requirements
       run: |
-        pip3 install numpy pandas epiweeks tqdm
+        pip3 install numpy pandas epiweeks tqdm pathlib
+
+    - name: Get latest data
+      run:  |
+        cd ./code
+        python ./get_latest_data.py
              
     - name: Compute reporting triangles
       run:  |
