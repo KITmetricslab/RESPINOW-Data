@@ -1,25 +1,41 @@
 import pandas as pd
 from pathlib import Path
 
-source_dict = {
+SOURCE_DICT = {
     'SARI' : ['sari'],
     'NRZ' : ['influenza', 'rsv'],
     'Survstat' : ['influenza', 'rsv', 'pneumococcal']
 }
 
+STATE_DICT = {
+    'DE-BB' : 'DE-BB-BE', 
+    'DE-BE' : 'DE-BB-BE',
+    'DE-NI' : 'DE-NI-HB',
+    'DE-HB' : 'DE-NI-HB',
+    'DE-RP' : 'DE-RP-SL',
+    'DE-SL' : 'DE-RP-SL',
+    'DE-SH' : 'DE-SH-HH',
+    'DE-HH' : 'DE-SH-HH'
+}
+
 def combine_file_history(files):
     df = pd.read_csv(files[0])
+    
     for f in files[1:]:
         df_new = pd.read_csv(f)
         df = pd.concat([df_new, df]).drop_duplicates(subset=['date', 'week', 'location', 'age_group'])
-
+        
+    if source == 'Survstat':
+        df.location = df.location.replace(STATE_DICT)
+        df = df.groupby(['date', 'year', 'week', 'location', 'age_group']).sum().reset_index()
+        
     df = df.sort_values(['location', 'age_group', 'date'])
     df.to_csv(f'../data/{source}/latest_data-{source}-{disease}{"-tests" if nrz_type == "AmountTested" else ""}.csv', index=False)
 
 for source in source_dict.keys():
     print(source)
     
-    for disease in source_dict[source]:
+    for disease in SOURCE_DICT[source]:
         path = Path(f'../data/{source}/{disease}/')
         print(path)
         
