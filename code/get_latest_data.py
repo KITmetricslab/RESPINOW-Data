@@ -32,7 +32,7 @@ def combine_file_history(files):
     df = df.sort_values(['location', 'age_group', 'date'])
     df.to_csv(f'../data/{source}/latest_data-{source}-{disease}{"-tests" if nrz_type == "AmountTested" else ""}.csv', index=False)
 
-for source in source_dict.keys():
+for source in SOURCE_DICT.keys():
     print(source)
     
     for disease in SOURCE_DICT[source]:
