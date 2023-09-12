@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 
 source_dict = {
-    'SARI' : ['archive'],
+    'SARI' : ['sari'],
     'NRZ' : ['influenza', 'rsv'],
     'Survstat' : ['influenza', 'rsv', 'pneumococcal']
 }
