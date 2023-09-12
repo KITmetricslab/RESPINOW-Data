@@ -1,0 +1,43 @@
+name: "compute-reporting-triangles"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * 1"
+  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@main
+
+    - name: Setup Python
+      uses: actions/setup-python@main
+      with:
+        python-version: '3.x'
+
+    - name: Install requirements
+      run: |
+        pip3 install numpy pandas epiweeks tqdm
+             
+    - name: Compute reporting triangles
+      run:  |
+        cd ./code
+        python3 ./reporting_triangles.py
+        
+    - name: Commit files
+      env:
+        AUTH: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git remote rm origin
+        git remote add origin https://${AUTH}@github.com/KITmetricslab/RESPINOW-Data.git > /dev/null 2>&1
+        git pull origin main
+        git add --all
+        git commit --allow-empty -m "Update reporting triangles"
+        
+    - name: Push changes
+      run: |
+        git push --quiet --set-upstream origin HEAD:main
+        echo "pushed to github"
