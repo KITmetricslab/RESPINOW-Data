@@ -10,8 +10,8 @@ source_dict = {
 for source in source_dict.keys():
     print(source)
     
-    for folder in source_dict[source]:
-        path = Path(f'../data/{source}/{folder}/')
+    for disease in source_dict[source]:
+        path = Path(f'../data/{source}/{disease}/')
         print(path)
         
         if source == 'SARI':
@@ -29,5 +29,5 @@ for source in source_dict.keys():
         
         df = df.sort_values(['location', 'age_group', 'date'])
 
-        df.to_csv(f'../data/{source}/latest_data-{source}-{folder}.csv', index=False)
+        df.to_csv(f'../data/{source}/latest_data-{source}-{disease}.csv', index=False)
         
