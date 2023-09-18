@@ -51,7 +51,7 @@ def process_files(files):
 
 path = Path('../data/CVN/daily_resolution/influenza/')
 dates_processed = sorted([file.name[:10] for file in path.glob('*.csv')])
-# if len(dates_processed) == 0: dates_processed = ['2022-09-20']
+if len(dates_processed) == 0: dates_processed = ['2022-09-20']
 
 possible_dates = pd.date_range(pd.to_datetime(dates_processed[-1]), pd.Timestamp.today(), 
                                inclusive='right').strftime("%Y-%m-%d").to_list()
@@ -71,7 +71,23 @@ else:
         files = [f'filtered_{date}.zip' for date in dates_processed]
         df = process_files(files)
         for disease in df.disease.unique():
-            path = f'../data/CVN/daily_resolution/{disease}/{max(files)[-14:-4]}-cvn-{disease}.csv'
+            # daily resolution
+            path = f'../data/CVN/daily_resolution/{disease}/'
+            os.makedirs(path, exist_ok=True)
+            filename = f'{date}-cvn-{disease}.csv'
+            
             temp = df[df.disease == disease].drop(columns='disease')
-            temp.to_csv(path, index=False)
+            temp.to_csv(path + filename, index=False)
+            
+            # 7-day incidence
+            path = f'../data/CVN/{disease}/'
+            os.makedirs(path, exist_ok=True)  
+            data_version = Week.fromdate(pd.to_datetime(date), system='iso').enddate()
+            filename = f'{data_version}-cvn-{disease}.csv'
+
+            temp = temp.groupby([pd.Grouper(key='date', freq='1W'), 'location', 'age_group']).sum().reset_index()
+            temp['week'] = temp.date.apply(lambda x: Week.fromdate(x, system='iso').week)
+            temp['year'] = temp.date.apply(lambda x: Week.fromdate(x, system='iso').year)
+            temp = temp[['date', 'year', 'week', 'location', 'age_group', 'value']]
+            temp.to_csv(path + filename, index=False)
             
