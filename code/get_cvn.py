@@ -85,7 +85,8 @@ else:
             os.makedirs(path, exist_ok=True)  
             data_version = Week.fromdate(pd.to_datetime(date), system='iso').enddate()
             filename = f'{data_version}-cvn-{disease}.csv'
-
+            
+            temp.date = pd.to_datetime(temp.date)
             temp = temp.groupby([pd.Grouper(key='date', freq='1W'), 'location', 'age_group']).sum().reset_index()
             temp['week'] = temp.date.apply(lambda x: Week.fromdate(x, system='iso').week)
             temp['year'] = temp.date.apply(lambda x: Week.fromdate(x, system='iso').year)
