@@ -1,0 +1,48 @@
+name: "get-cvn-data"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 16 * * 5"
+  
+
+jobs:
+  get-cvn-data:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@main
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install requirements
+      run: |
+        pip install os pandas requests pathlib pyzipper io
+        
+    - name: Get data
+      env:
+        CVN_USER: ${{ secrets.CVN_USER }}
+        CVN_PASSWORD: ${{ secrets.CVN_PASSWORD }}
+        CVN_URL: ${{ secrets.CVN_URL }}
+        
+      run:  |
+       cd ./code
+       python3 ./get_cvn.py     
+        
+    - name: Commit files
+      env:
+        AUTH: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git remote rm origin
+        git remote add origin https://${AUTH}@github.com/KITmetricslab/RESPINOW-Data.git > /dev/null 2>&1
+        git pull origin main
+        git add --all data/RespVir/
+        git commit --allow-empty -m "Update CVN data"
+        
+    - name: Push changes
+      run: |
+        git push --quiet --set-upstream origin HEAD:main
+        echo "pushed to github"
