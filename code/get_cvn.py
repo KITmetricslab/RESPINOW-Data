@@ -4,6 +4,7 @@ from pathlib import Path
 import requests
 from pyzipper import AESZipFile
 from io import BytesIO
+from epiweeks import Week
 
 USERNAME = os.environ['CVN_USER']
 PASSWORD = os.environ['CVN_PASSWORD']
