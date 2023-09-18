@@ -18,7 +18,7 @@ jobs:
 
     - name: Install requirements
       run: |
-        pip install pandas requests pathlib pyzipper
+        pip install pandas requests pathlib pyzipper epiweeks
         
     - name: Get data
       env:
