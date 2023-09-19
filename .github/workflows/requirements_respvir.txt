@@ -1,6 +1,0 @@
-pandas
-pathlib
-selenium
-packaging
-webdriver_manager
-chromedriver-autoinstaller
