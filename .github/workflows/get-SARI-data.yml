@@ -32,7 +32,7 @@ jobs:
        
         
     - name: Get latest SARI data
-      run: Rscript ./code/get_weekly_sari_data.R
+      run: Rscript ./code/get_sari_data.R
         
     - name: Commit files
       env:
