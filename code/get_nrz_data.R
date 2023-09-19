@@ -1,6 +1,6 @@
 
 # Source functions
-source("analyze_images.R")
+source("nrz_functions.R")
 
 #Get current week
 date_string <- date2ISOweek(Sys.Date())
