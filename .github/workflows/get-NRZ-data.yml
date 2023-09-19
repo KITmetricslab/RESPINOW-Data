@@ -27,7 +27,7 @@ jobs:
     - name: Get weekly NRZ data
       run: |
         cd ./code
-        Rscript ./get_weekly_data.R
+        Rscript ./get_nrz_data.R
         
     - name: Commit files
       env:
