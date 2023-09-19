@@ -24,6 +24,8 @@ def load_data(source, disease, date, nrz_type='VirusDetections'):
         path = f'../data/SARI/sari/{date}-icosari-sari.csv'
     elif source == 'Survstat':
         path = f'../data/Survstat/{disease}/{date}-survstat-{disease}.csv'
+    elif source == 'CVN':
+        path = f'../data/CVN/{disease}/{date}-cvn-{disease}.csv'
     
     try:
         df = pd.read_csv(path)
@@ -114,6 +116,9 @@ def make_template(source, disease, dates):
         age_groups = ['00+']
     elif source == 'SARI':
         states = []
+    elif source == 'CVN':
+        states = []
+        age_groups = ['00+']
     elif source == 'Survstat' and disease == 'rsv':
         states = ['DE-SN']
 
@@ -212,7 +217,8 @@ def compute_reporting_triangle(source, disease, nrz_type='VirusDetections', max_
 SOURCE_DICT = {
     'SARI' : ['sari'],
     'NRZ' : ['influenza', 'rsv'],
-    'Survstat' : ['influenza', 'rsv', 'pneumococcal']
+    'Survstat' : ['influenza', 'rsv', 'pneumococcal'],
+    'CVN' : ['influenza', 'rsv', 'pneumococcal']
 }
 
 for source in SOURCE_DICT.keys():
