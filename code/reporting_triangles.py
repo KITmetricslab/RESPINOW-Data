@@ -164,14 +164,21 @@ def compute_reporting_triangle(source, disease, nrz_type='VirusDetections', max_
     df = make_template(source, disease, dates)
     for delay in tqdm(range(0, max_delay + 1), total=max_delay + 1, desc=f'{disease}{"-tests" if nrz_type == "AmountTested" else ""}: '):
         relevant_dates = [d for d in dates if d <= max(dates) - delay]
-        df_temp = make_template(source, disease, relevant_dates)
-        dfs = []
-        for date in relevant_dates:
-            data_version = date + delay
-            df_delayed = load_delayed_data(source, disease, date, data_version, nrz_type)
-            dfs.append(df_delayed)
-        df_delayed = pd.concat(dfs)
-        df_temp = df_temp.merge(df_delayed, how='left')
+        
+        # if the file history is not long enough, we need to merge empty dataframes to create all columns
+        if len(relevant_dates) > 0:
+            df_temp = make_template(source, disease, relevant_dates)
+            dfs = []
+            for date in relevant_dates:
+                data_version = date + delay
+                df_delayed = load_delayed_data(source, disease, date, data_version, nrz_type)
+                dfs.append(df_delayed)
+            df_delayed = pd.concat(dfs)
+            df_temp = df_temp.merge(df_delayed, how='left')
+        else:
+            # create an empty template with "dates" (to create new empty columns)
+            df_temp = make_template(source, disease, dates) 
+            df_temp['value'] = np.nan
 
         # we flag missing values to fill later on (not all should be filled to preserve reporting triangle shape)
         df_temp.value = df_temp.value.fillna('to_fill')
