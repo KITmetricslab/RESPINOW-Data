@@ -29,6 +29,11 @@ jobs:
       run:  |
         cd ./code
         python3 ./reporting_triangles.py
+
+    - name: Preprocess reporting triangle
+      run:  |
+        cd ./code
+        python ./preprocess_reporting_triangles.py
         
     - name: Commit files
       env:
