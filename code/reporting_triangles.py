@@ -178,7 +178,7 @@ def compute_reporting_triangle(source, disease, nrz_type='VirusDetections', max_
         else:
             # create an empty template with "dates" (to create new empty columns)
             df_temp = make_template(source, disease, dates) 
-            df_temp['value'] = np.nan
+            df_temp['value'] = 'not_observed'
 
         # we flag missing values to fill later on (not all should be filled to preserve reporting triangle shape)
         df_temp.value = df_temp.value.fillna('to_fill')
