@@ -1,0 +1,43 @@
+name: "get-AGI-data"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 16 * * 5"
+  
+
+jobs:
+  get-agi-data:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@main
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install requirements
+      run: |
+        pip install pandas requests pathlib epiweeks
+        
+    - name: Get data
+      run:  |
+       cd ./code
+       python3 ./get_agi.py     
+        
+    - name: Commit files
+      env:
+        AUTH: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git remote rm origin
+        git remote add origin https://${AUTH}@github.com/KITmetricslab/RESPINOW-Data.git > /dev/null 2>&1
+        git pull origin main
+        git add --all data/CVN/
+        git commit --allow-empty -m "Update AGI data"
+        
+    - name: Push changes
+      run: |
+        git push --quiet --set-upstream origin HEAD:main
+        echo "pushed to github"
