@@ -26,13 +26,15 @@ def load_data(source, disease, date, nrz_type='VirusDetections'):
         path = f'../data/Survstat/{disease}/{date}-survstat-{disease}.csv'
     elif source == 'CVN':
         path = f'../data/CVN/{disease}/{date}-cvn-{disease}.csv'
+    elif source == 'AGI':
+        path = f'../data/AGI/{disease}/{date}-agi-{disease}.csv'
     
     try:
         df = pd.read_csv(path)
         df.date = pd.to_datetime(df.date)
         df.date = df.date.apply(lambda x: Week.fromdate(x, system='iso').enddate())
         
-        if source == 'Survstat':
+        if source in ['Survstat', 'AGI']:
             df.location = df.location.replace(STATE_DICT)
             df = df.groupby(['date', 'year', 'week', 'location', 'age_group']).sum().reset_index()
         
@@ -121,6 +123,8 @@ def make_template(source, disease, dates):
         age_groups = ['00+']
     elif source == 'Survstat' and disease == 'rsv':
         states = ['DE-SN']
+    elif source == 'AGI':
+        age_groups = ['00+', '00-04', '05-14', '15-34', '35-59', '60+']
 
     dfs = []
     for date in dates:
@@ -218,7 +222,8 @@ SOURCE_DICT = {
     'SARI' : ['sari'],
     'NRZ' : ['influenza', 'rsv'],
     'Survstat' : ['influenza', 'rsv', 'pneumococcal'],
-    'CVN' : ['influenza', 'rsv', 'pneumococcal']
+    'CVN' : ['influenza', 'rsv', 'pneumococcal'],
+    'AGI' : ['are']
 }
 
 for source in SOURCE_DICT.keys():
