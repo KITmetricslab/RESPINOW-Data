@@ -38,6 +38,9 @@ def load_file_from_tag(owner, repo, filepath, tag):
     
     return data
 
+def next_sunday(date):
+    return str(Week.fromdate(pd.to_datetime(date), system='iso').enddate())
+
 def preprocess_ARE(df):
     df = df.drop(columns='Saison', errors='ignore')
 
@@ -89,11 +92,11 @@ print("List of tags:", tags)
 path = Path('../data/AGI/are/')
 os.makedirs(path, exist_ok=True)
 dates_processed = sorted([file.name[:10] for file in path.glob('*.csv')])
-new_dates = [date for date in tags if date not in dates_processed]
+new_dates = [date for date in tags if next_sunday(date) not in dates_processed]
 
 for date in new_dates:
     print(date)
     df = load_file_from_tag(OWNER, REPO, FILEPATH, date)
     df = preprocess_ARE(df)
-    df.to_csv(f'../data/AGI/are/{date}-agi-are.csv', index=False)
+    df.to_csv(f'../data/AGI/are/{next_sunday(date)}-agi-are.csv', index=False)
     
