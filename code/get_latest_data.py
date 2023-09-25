@@ -5,7 +5,8 @@ SOURCE_DICT = {
     'SARI' : ['sari'],
     'NRZ' : ['influenza', 'rsv'],
     'Survstat' : ['influenza', 'rsv', 'pneumococcal'],
-    'CVN' : ['influenza', 'rsv', 'pneumococcal']
+    'CVN' : ['influenza', 'rsv', 'pneumococcal'],
+    'AGI' : ['are']
 }
 
 STATE_DICT = {
@@ -26,7 +27,7 @@ def combine_file_history(files):
         df_new = pd.read_csv(f)
         df = pd.concat([df_new, df]).drop_duplicates(subset=['date', 'week', 'location', 'age_group'])
         
-    if source == 'Survstat':
+    if source in ['Survstat', 'AGI']:
         df.location = df.location.replace(STATE_DICT)
         df = df.groupby(['date', 'year', 'week', 'location', 'age_group']).sum().reset_index()
         
