@@ -2,7 +2,7 @@ name: "get-CVN-data"
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 16 * * 1,5"
+    - cron: "0 8,16 * * 1,5"   
   
 
 jobs:
