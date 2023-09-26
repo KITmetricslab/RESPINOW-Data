@@ -37,17 +37,46 @@ def process_files(files):
                                        'infasaisonpos': 'influenza', 
                                        'rsvpos': 'rsv'})
 
-    df.value = df.value == 2
+    df = df[df.value != 3].copy() # remove untested
+    df.value = (df.value == 2) # True = positive test
 
-    df = df.groupby(['disease', 'date']).sum().reset_index()
+    df = df.groupby(['disease', 'date']).value.agg(value = 'sum', tests = 'count').reset_index()
     
     df['location'] = 'DE'
     df['age_group'] = '00+'
     
     df = df.sort_values(['location', 'age_group', 'date'], ignore_index=True)
-    df = df[['disease', 'date', 'location', 'age_group', 'value']]
+    df = df[['disease', 'date', 'location', 'age_group', 'value', 'tests']]
     
     return(df)
+
+def export_cvn(df, date, tests=False):
+    for disease in df.disease.unique():
+        # daily resolution
+        path = f'../data/CVN/daily_resolution/{disease}/'
+        os.makedirs(path, exist_ok=True)
+        filename = f'{date}-cvn-{disease}{"-tests" if tests else ""}.csv'
+        print(filename)
+        temp = df[df.disease == disease].copy()
+        if not tests:
+            temp = temp.drop(columns=['disease', 'tests'])
+        else:
+            temp = temp.drop(columns=['disease', 'value']).rename(columns={'tests' : 'value'})
+        temp.to_csv(path + filename, index=False)
+
+        # 7-day incidence
+        path = f'../data/CVN/{disease}/'
+        os.makedirs(path, exist_ok=True)  
+        data_version = Week.fromdate(pd.to_datetime(date), system='iso').enddate()
+        filename = f'{data_version}-cvn-{disease}{"-tests" if tests else ""}.csv'
+        print(filename)
+
+        temp.date = pd.to_datetime(temp.date)
+        temp = temp.groupby([pd.Grouper(key='date', freq='1W'), 'location', 'age_group']).sum().reset_index()
+        temp['week'] = temp.date.apply(lambda x: Week.fromdate(x, system='iso').week)
+        temp['year'] = temp.date.apply(lambda x: Week.fromdate(x, system='iso').year)
+        temp = temp[['date', 'year', 'week', 'location', 'age_group', 'value']]
+        temp.to_csv(path + filename, index=False)
 
 
 path = Path('../data/CVN/daily_resolution/influenza/')
@@ -71,25 +100,6 @@ else:
         dates_processed.append(date)
         files = [f'filtered_{date}.zip' for date in dates_processed]
         df = process_files(files)
-        for disease in df.disease.unique():
-            # daily resolution
-            path = f'../data/CVN/daily_resolution/{disease}/'
-            os.makedirs(path, exist_ok=True)
-            filename = f'{date}-cvn-{disease}.csv'
-            
-            temp = df[df.disease == disease].drop(columns='disease')
-            temp.to_csv(path + filename, index=False)
-            
-            # 7-day incidence
-            path = f'../data/CVN/{disease}/'
-            os.makedirs(path, exist_ok=True)  
-            data_version = Week.fromdate(pd.to_datetime(date), system='iso').enddate()
-            filename = f'{data_version}-cvn-{disease}.csv'
-            
-            temp.date = pd.to_datetime(temp.date)
-            temp = temp.groupby([pd.Grouper(key='date', freq='1W'), 'location', 'age_group']).sum().reset_index()
-            temp['week'] = temp.date.apply(lambda x: Week.fromdate(x, system='iso').week)
-            temp['year'] = temp.date.apply(lambda x: Week.fromdate(x, system='iso').year)
-            temp = temp[['date', 'year', 'week', 'location', 'age_group', 'value']]
-            temp.to_csv(path + filename, index=False)
+        export_cvn(df, date, tests=False)
+        export_cvn(df, date, tests=True)
             
