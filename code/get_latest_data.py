@@ -21,32 +21,36 @@ STATE_DICT = {
 }
 
 def combine_file_history(files):
+    files = sorted(files)
     df = pd.read_csv(files[0])
     
     for f in files[1:]:
         df_new = pd.read_csv(f)
         df = pd.concat([df_new, df]).drop_duplicates(subset=['date', 'week', 'location', 'age_group'])
         
+    return df
+
+def compute_latest_data(source, disease, tests=False):
+    path = Path(f'../data/{source}/{disease}/')
+    files = [f for f in path.glob('*.csv') if ('test' in f.name.lower()) == tests]
+    
+    df = combine_file_history(files)
+    
     if source in ['Survstat', 'AGI']:
         df.location = df.location.replace(STATE_DICT)
         df = df.groupby(['date', 'year', 'week', 'location', 'age_group']).sum().reset_index()
         
     df = df.sort_values(['location', 'age_group', 'date'])
-    df.to_csv(f'../data/{source}/latest_data-{source}-{disease}{"-tests" if nrz_type == "AmountTested" else ""}.csv', index=False)
+    df.to_csv(f'../data/{source}/latest_data-{source}-{disease}{"-tests" if tests else ""}.csv', index=False)
 
+    
 for source in SOURCE_DICT.keys():
+    print('___________')
     print(source)
     
     for disease in SOURCE_DICT[source]:
-        path = Path(f'../data/{source}/{disease}/')
-        print(path)
-        
-        if source == 'NRZ':
-            for nrz_type in ['VirusDetections', 'AmountTested']:
-                files = sorted([f for f in path.rglob('*.csv') if nrz_type in f.name])
-                combine_file_history(files)
+        if source in ['NRZ', 'CVN']:
+            compute_latest_data(source, disease)
+            compute_latest_data(source, disease, tests=True)
         else:
-            nrz_type = None
-            files = sorted([f for f in path.rglob('*.csv')])
-            combine_file_history(files)
-        
+            compute_latest_data(source, disease)
