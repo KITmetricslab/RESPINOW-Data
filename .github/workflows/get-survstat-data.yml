@@ -1,8 +1,8 @@
 name: "get-survstat-data"
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: "0 4 * * 1"
+  schedule:
+    - cron: "0 8,16 * * 1,5"
   
 
 jobs:
