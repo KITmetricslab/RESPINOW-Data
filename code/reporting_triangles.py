@@ -74,7 +74,7 @@ def list_all_files(source, disease, tests=False):
     return df_files
 
 def get_date_range(df_files):
-    max_date = df_files.iso_date.max().enddate() # TODO: check date vs iso_date
+    max_date = df_files.iso_date.max().enddate() 
     min_date = df_files.iso_date.min().enddate()
 
     dates = pd.date_range(min_date, max_date, freq="1W")
@@ -144,7 +144,7 @@ def load_delayed_data(source, disease, date, data_version, tests=False):
 def load_latest_data(source, disease, tests=False):
     df = pd.read_csv(f'../data/{source}/latest_data-{source}-{disease}{"-tests" if tests else ""}.csv')
     df.date = pd.to_datetime(df.date)
-    df.date = df.date.apply(lambda x: Week.fromdate(x, system='iso').enddate()) # do we really need this?
+    df.date = df.date.apply(lambda x: Week.fromdate(x, system='iso').enddate()) 
     return(df)
 
 def compute_reporting_triangle(source, disease, tests=False, max_delay=10):
