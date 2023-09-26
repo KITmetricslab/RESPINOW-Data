@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from epiweeks import Week
 from tqdm.auto import tqdm
-
+from pathlib import Path
 
 STATE_DICT = {
     'DE-BB' : 'DE-BB-BE', 
@@ -16,16 +16,15 @@ STATE_DICT = {
     'DE-HH' : 'DE-SH-HH'
 }
 
-
-def load_data(source, disease, date, nrz_type='VirusDetections'):
+def load_data(source, disease, date, tests=False):
     if source == 'NRZ':
-        path = f'../data/NRZ/{disease}/{date}_{nrz_type}.csv'
+        path = f'../data/NRZ/{disease}/{date}_{"AmountTested" if tests else "VirusDetections"}.csv'
     elif source == 'SARI':
         path = f'../data/SARI/sari/{date}-icosari-sari.csv'
     elif source == 'Survstat':
         path = f'../data/Survstat/{disease}/{date}-survstat-{disease}.csv'
     elif source == 'CVN':
-        path = f'../data/CVN/{disease}/{date}-cvn-{disease}.csv'
+        path = f'../data/CVN/{disease}/{date}-cvn-{disease}{"-tests" if tests else ""}.csv'
     elif source == 'AGI':
         path = f'../data/AGI/{disease}/{date}-agi-{disease}.csv'
     
@@ -45,7 +44,6 @@ def load_data(source, disease, date, nrz_type='VirusDetections'):
     except:
         return None
 
-    
 def add_iso_dates(df):
     """
     Adds iso_week, iso_year and iso_date (end date of the week) to dataframe.
@@ -56,10 +54,10 @@ def add_iso_dates(df):
 
     return df
 
-
-def list_all_files(source, disease, nrz_type='VirusDetections'):
+def list_all_files(source, disease, tests=False):
     # load all files from repo
-    files = os.listdir(f'../data/{source}/{disease}')
+    path = Path(f'../data/{source}/{disease}/')
+    files = [f.name for f in path.glob('*.csv') if ('test' in f.name.lower()) == tests]
      
     # create dataframe so we can easily select files by date
     df_files = pd.DataFrame({'filename': files})
@@ -71,21 +69,18 @@ def list_all_files(source, disease, nrz_type='VirusDetections'):
     df_files = add_iso_dates(df_files)
     
     if source == 'NRZ':
-        df_files = df_files[df_files.filename.str.contains(nrz_type)]
         df_files = df_files[df_files.date >= "2022-07-24"]
     
     return df_files
 
-
 def get_date_range(df_files):
-    max_date = df_files.iso_date.max().enddate()
+    max_date = df_files.iso_date.max().enddate() # TODO: check date vs iso_date
     min_date = df_files.iso_date.min().enddate()
 
     dates = pd.date_range(min_date, max_date, freq="1W")
     dates = [Week.fromdate(d, system='iso') for d in dates]
 
     return dates
-
 
 def make_placeholder(date,
                      states=['DE-BB-BE', 'DE-BW', 'DE-BY', 'DE-HE', 'DE-MV', 'DE-NI-HB',
@@ -107,7 +102,6 @@ def make_placeholder(date,
                               'value': np.nan})
 
     return pd.concat([df_age_groups, df_states])
-
 
 def make_template(source, disease, dates):
     states=['DE-BB-BE', 'DE-BW', 'DE-BY', 'DE-HE', 'DE-MV', 'DE-NI-HB',
@@ -135,10 +129,9 @@ def make_template(source, disease, dates):
 
     return df
 
-
-def load_delayed_data(source, disease, date, data_version, nrz_type='VirusDetections'):
+def load_delayed_data(source, disease, date, data_version, tests=False):
     try:
-        df = load_data(source, disease, data_version.enddate(), nrz_type)
+        df = load_data(source, disease, data_version.enddate(), tests)
     except:
         df = None
 
@@ -148,30 +141,27 @@ def load_delayed_data(source, disease, date, data_version, nrz_type='VirusDetect
 
     return df
 
-
-def load_latest_data(source, disease, nrz_type='VirusDetections'):
-    df = pd.read_csv(f'../data/{source}/latest_data-{source}-{disease}{"-tests" if nrz_type == "AmountTested" else ""}.csv')
+def load_latest_data(source, disease, tests=False):
+    df = pd.read_csv(f'../data/{source}/latest_data-{source}-{disease}{"-tests" if tests else ""}.csv')
     df.date = pd.to_datetime(df.date)
-    df.date = df.date.apply(lambda x: Week.fromdate(x, system='iso').enddate())
+    df.date = df.date.apply(lambda x: Week.fromdate(x, system='iso').enddate()) # do we really need this?
     return(df)
 
+def compute_reporting_triangle(source, disease, tests=False, max_delay=10):
 
-def compute_reporting_triangle(source, disease, nrz_type='VirusDetections', max_delay=10):
-
-    df_files = list_all_files(source, disease, nrz_type)
+    df_files = list_all_files(source, disease, tests)
     dates = get_date_range(df_files)
 
     df = make_template(source, disease, dates)
-    for delay in tqdm(range(0, max_delay + 1), total=max_delay + 1, desc=f'{disease}{"-tests" if nrz_type == "AmountTested" else ""}: '):
+    for delay in tqdm(range(0, max_delay + 1), total=max_delay + 1, desc=f'{disease}{"-tests" if tests else ""}: '):
         relevant_dates = [d for d in dates if d <= max(dates) - delay]
-        
         # if the file history is not long enough, we need to merge empty dataframes to create all columns
         if len(relevant_dates) > 0:
             df_temp = make_template(source, disease, relevant_dates)
             dfs = []
             for date in relevant_dates:
                 data_version = date + delay
-                df_delayed = load_delayed_data(source, disease, date, data_version, nrz_type)
+                df_delayed = load_delayed_data(source, disease, date, data_version, tests)
                 dfs.append(df_delayed)
             df_delayed = pd.concat(dfs)
             df_temp = df_temp.merge(df_delayed, how='left')
@@ -179,7 +169,7 @@ def compute_reporting_triangle(source, disease, nrz_type='VirusDetections', max_
             # create an empty template with "dates" (to create new empty columns)
             df_temp = make_template(source, disease, dates) 
             df_temp['value'] = 'not_observed'
-
+            
         # we flag missing values to fill later on (not all should be filled to preserve reporting triangle shape)
         df_temp.value = df_temp.value.fillna('to_fill')
 
@@ -188,7 +178,7 @@ def compute_reporting_triangle(source, disease, nrz_type='VirusDetections', max_
         df = df.merge(df_temp, how='left')
 
     # use latest file to compute column for remaining correction beyond the specified largest delay
-    df_latest = load_latest_data(source, disease, nrz_type)
+    df_latest = load_latest_data(source, disease, tests)
     df_latest.value = df_latest.value.fillna('to_fill')
     df_latest = df_latest.rename(columns={'value': f'value_>{max_delay}w'})
 
@@ -218,7 +208,7 @@ def compute_reporting_triangle(source, disease, nrz_type='VirusDetections', max_
     df = df.sort_values(['location', 'age_group', 'date'], ignore_index=True)
     
     path = (f'../data/{source}/reporting_triangle-{"icosari" if source == "SARI" else source.lower()}'
-            f'-{disease}{"-tests" if nrz_type == "AmountTested" else ""}.csv')
+            f'-{disease}{"-tests" if tests else ""}.csv')
     
     df.to_csv(path, index=False)
 
@@ -238,8 +228,8 @@ for source in SOURCE_DICT.keys():
     print(source)
     
     for disease in SOURCE_DICT[source]:
-        if source == 'NRZ':
-            compute_reporting_triangle(source, disease, 'VirusDetections')
-            compute_reporting_triangle(source, disease, 'AmountTested')
+        if source in ['NRZ', 'CVN']:
+            compute_reporting_triangle(source, disease)
+            compute_reporting_triangle(source, disease, tests=True)
         else:
             compute_reporting_triangle(source, disease)
