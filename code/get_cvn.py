@@ -81,6 +81,7 @@ def export_cvn(df, date, tests=False):
 
 path = Path('../data/CVN/daily_resolution/influenza/')
 dates_processed = sorted([file.name[:10] for file in path.glob('*.csv')])
+dates_processed = []
 if len(dates_processed) == 0: dates_processed = ['2022-09-20']
 
 possible_dates = pd.date_range(pd.to_datetime(dates_processed[-1]), pd.Timestamp.today(), 
