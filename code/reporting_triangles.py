@@ -147,7 +147,11 @@ def load_latest_data(source, disease, tests=False):
     df.date = df.date.apply(lambda x: Week.fromdate(x, system='iso').enddate()) 
     return(df)
 
-def compute_reporting_triangle(source, disease, tests=False, max_delay=10):
+def compute_reporting_triangle(source, disease, tests=False, max_delay=10, prospective=False):
+    
+    # if data is reported for the ongoing week, we add an additional column for -1w
+    if prospective:
+        max_delay += 1
 
     df_files = list_all_files(source, disease, tests)
     dates = get_date_range(df_files)
@@ -173,14 +177,14 @@ def compute_reporting_triangle(source, disease, tests=False, max_delay=10):
         # we flag missing values to fill later on (not all should be filled to preserve reporting triangle shape)
         df_temp.value = df_temp.value.fillna('to_fill')
 
-        df_temp = df_temp.rename(columns={'value': f'value_{delay}w'})
+        df_temp = df_temp.rename(columns={'value': f'value_{(delay -1) if prospective else delay}w'})
 
         df = df.merge(df_temp, how='left')
 
     # use latest file to compute column for remaining correction beyond the specified largest delay
     df_latest = load_latest_data(source, disease, tests)
     df_latest.value = df_latest.value.fillna('to_fill')
-    df_latest = df_latest.rename(columns={'value': f'value_>{max_delay}w'})
+    df_latest = df_latest.rename(columns={'value': f'value_>{(max_delay -1) if prospective else max_delay}w'})
 
     df = df.merge(df_latest, how='left')
 
@@ -216,11 +220,11 @@ def compute_reporting_triangle(source, disease, tests=False, max_delay=10):
 # Compute all reporting triangles
 
 SOURCE_DICT = {
-    'SARI' : ['sari'],
-    'NRZ' : ['influenza', 'rsv'],
-    'Survstat' : ['influenza', 'rsv', 'pneumococcal'],
-    'CVN' : ['influenza', 'rsv', 'pneumococcal'],
-    'AGI' : ['are']
+#     'SARI' : ['sari'],
+#     'NRZ' : ['influenza', 'rsv'],
+    'Survstat' : ['influenza', 'rsv', 'pneumococcal']#,
+#     'CVN' : ['influenza', 'rsv', 'pneumococcal'],
+#     'AGI' : ['are']
 }
 
 for source in SOURCE_DICT.keys():
@@ -231,5 +235,7 @@ for source in SOURCE_DICT.keys():
         if source in ['NRZ', 'CVN']:
             compute_reporting_triangle(source, disease)
             compute_reporting_triangle(source, disease, tests=True)
+        elif source == 'Survstat':
+            compute_reporting_triangle(source, disease, prospective=True)
         else:
             compute_reporting_triangle(source, disease)
