@@ -88,7 +88,6 @@ def add_iso_dates(df):
     return df
 
 
-# Todo: Check if there's a difference for age/state
 def list_all_files(disease, stratum='state'):
     # download all files from repo
     url = 'https://api.github.com/repos/KITmetricslab/nowcasting-data/git/trees/main?recursive=1'
@@ -109,18 +108,15 @@ def list_all_files(disease, stratum='state'):
 
     df_files = add_iso_dates(df_files)
     df_files['end_date'] = df_files.iso_date.apply(lambda x: x.enddate())
+    df_files['thursday_date'] = df_files.iso_date.apply(lambda x: x.daydate(3))
 
-    # only keep latest file per week
-    df_files = df_files.sort_values('date').groupby(['iso_year', 'iso_week']).tail(1).reset_index(drop=True)
-    
-    # remove current week as the data might not be final yet
-    current_week = Week.thisweek(system='iso')
-    df_files = df_files[df_files.iso_date != current_week]
-    
+    # only keep data available on Thursday
+    df_files = df_files[df_files.date == df_files.thursday_date]
+     
     # only consider files that have not been downloaded before
-    path = Path(f'../data/Survstat/{DISEASE_DICT[disease]}/')
-    existing_dates = pd.unique([f.name[:10] for f in path.glob('**/*') if f.name.endswith('.csv')])
-    df_files = df_files[~df_files.end_date.astype(str).isin(existing_dates)]
+#     path = Path(f'../data/Survstat/{DISEASE_DICT[disease]}/')
+#     existing_dates = pd.unique([f.name[:10] for f in path.glob('**/*') if f.name.endswith('.csv')])
+#     df_files = df_files[~df_files.end_date.astype(str).isin(existing_dates)]
 
     return df_files
 
