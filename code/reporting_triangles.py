@@ -193,7 +193,8 @@ def compute_reporting_triangle(source, disease, tests=False, max_delay=10, prosp
     df = df.replace({'to_fill': np.nan})
 
     # if initial report is missing replace with zero
-    df.value_0w = df.value_0w.fillna(0)
+    initial_report = f'value_{-1 if prospective else 0}w'
+    df[initial_report] = df[initial_report].fillna(0)
 
     # we use forward filling to fill missing values in between
     df = df.fillna(method="ffill", axis=1)
