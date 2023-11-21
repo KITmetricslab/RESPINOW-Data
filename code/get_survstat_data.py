@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 import requests
@@ -60,10 +61,10 @@ def process_age_file(df):
     return df
 
 
-def load_data(disease, date):
+def load_data(disease, date, sha):
     try:
-        df1 = pd.read_csv(f"{PATH}/{disease}/{disease}-states-{date}.csv")
-        df2 = pd.read_csv(f"{PATH}/{disease}/{disease}-age-{date}.csv")
+        df1 = pd.read_csv(f"{PATH}/{sha}/{disease}/{disease}-states-{date}.csv")
+        df2 = pd.read_csv(f"{PATH}/{sha}/{disease}/{disease}-age-{date}.csv")
 
         df1 = process_state_file(df1)
         df2 = process_age_file(df2)
@@ -114,14 +115,41 @@ def list_all_files(disease, stratum='state'):
     df_files = df_files[df_files.date == df_files.thursday_date]
      
     # only consider files that have not been downloaded before
-    path = Path(f'../data/Survstat/{DISEASE_DICT[disease]}/')
-    existing_dates = pd.unique([f.name[:10] for f in path.glob('**/*') if f.name.endswith('.csv')])
-    df_files = df_files[~df_files.end_date.astype(str).isin(existing_dates)]
+#     path = Path(f'../data/Survstat/{DISEASE_DICT[disease]}/')
+#     existing_dates = pd.unique([f.name[:10] for f in path.glob('**/*') if f.name.endswith('.csv')])
+#     df_files = df_files[~df_files.end_date.astype(str).isin(existing_dates)]
 
     return df_files
 
 
-PATH = 'https://raw.githubusercontent.com/KITmetricslab/nowcasting-data/main/'
+def get_commits(disease, date, stratum):
+    response = requests.get(f'{API_PATH}/commits?path={disease}/{disease}-{stratum}-{date}.csv',
+                           headers = {'Authorization': f'token {TOKEN}'})
+    commits = response.json()
+    commit_data = {
+        'sha': [commit['sha'] for commit in commits],
+        'date': [commit['commit']['author']['date'] for commit in commits],
+    }
+
+    df = pd.DataFrame(commit_data)
+    df.date = pd.to_datetime(df.date)
+    df['stratum'] = stratum
+    return df
+
+
+def get_sha(disease, date):
+    df1 = get_commits(disease, date, 'states')
+    df2 = get_commits(disease, date, 'age')
+    df = pd.concat([df1, df2])
+    
+    # use the later date of the first commits
+    sha = df.loc[df.date == df.groupby('stratum')['date'].min().max(), 'sha'].iloc[0]
+    return sha
+
+
+PATH = 'https://raw.githubusercontent.com/KITmetricslab/nowcasting-data/'
+API_PATH = f'https://api.github.com/repos/KITmetricslab/nowcasting-data'
+TOKEN = os.environ['TOKEN']
 
 LOCATION_CODES = {'Deutschland': 'DE',
                   'Schleswig-Holstein': 'DE-SH',
@@ -158,9 +186,10 @@ for disease in DISEASE_DICT.keys():
     print("____________________")
     print(disease)
     df_files = list_all_files(disease)
+    df_files['sha'] = df_files.date.apply(lambda x: get_sha(disease, x.date()))
     for index, row in df_files.iterrows():
         print("Processing:", row.filename)
-        df = load_data(disease, row.date.date())
+        df = load_data(disease, row.date.date(), row.sha)
         target_path = f'../data/Survstat/{DISEASE_DICT[disease]}/{row.end_date}-survstat-{DISEASE_DICT[disease]}.csv'
         df.to_csv(target_path, index = False)
         print("Saving to:", target_path)
