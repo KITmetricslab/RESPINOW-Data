@@ -115,9 +115,9 @@ def list_all_files(disease, stratum='state'):
     df_files = df_files[df_files.date == df_files.thursday_date]
      
     # only consider files that have not been downloaded before
-#     path = Path(f'../data/Survstat/{DISEASE_DICT[disease]}/')
-#     existing_dates = pd.unique([f.name[:10] for f in path.glob('**/*') if f.name.endswith('.csv')])
-#     df_files = df_files[~df_files.end_date.astype(str).isin(existing_dates)]
+    path = Path(f'../data/Survstat/{DISEASE_DICT[disease]}/')
+    existing_dates = pd.unique([f.name[:10] for f in path.glob('**/*') if f.name.endswith('.csv')])
+    df_files = df_files[~df_files.end_date.astype(str).isin(existing_dates)]
 
     return df_files
 
