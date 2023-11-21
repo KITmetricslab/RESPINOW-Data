@@ -21,6 +21,8 @@ jobs:
         pip install numpy pandas pathlib requests epiweeks
              
     - name: Get survstat data
+      env:
+        TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run:  |
         cd ./code
         python ./get_survstat_data.py
