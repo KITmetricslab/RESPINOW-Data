@@ -139,11 +139,15 @@ def get_commits(disease, date, stratum):
 
 def get_sha(disease, date):
     df1 = get_commits(disease, date, 'states')
+    df1 = df1[df1["date"].hour < 20]
+    
     df2 = get_commits(disease, date, 'age')
+    df2 = df2[df2["date"].hour < 20]
+    
     df = pd.concat([df1, df2])
     
     # use the later date of the first commits
-    sha = df.loc[df.date == df.groupby('stratum')['date'].min().max(), 'sha'].iloc[0]
+    sha = df.loc[df.date == df.groupby('stratum')['date'].max().max(), 'sha'].iloc[0]
     return sha
 
 
