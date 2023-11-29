@@ -144,7 +144,7 @@ def get_sha(disease, date):
 
     
     df2 = get_commits(disease, date, 'age')
-    print(df2["hour"])
+    print(df2.date)
     # df2 = df2[df2["date"].hour < 20]
     
     df = pd.concat([df1, df2])
