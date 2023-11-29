@@ -139,12 +139,13 @@ def get_commits(disease, date, stratum):
 
 def get_sha(disease, date):
     df1 = get_commits(disease, date, 'states')
-    # df1 = df1[df1["date"].hour < 20]
+    df1 = df1[df1.date.hour < 20]
+    print(df1)
 
     
     df2 = get_commits(disease, date, 'age')
-    print(df2.date.hour)
-    # df2 = df2[df2["date"].hour < 20]
+    df2 = df2[df2.date.hour < 20]
+    print(df2)
     
     df = pd.concat([df1, df2])
     
