@@ -4,6 +4,8 @@ import pandas as pd
 import requests
 from pathlib import Path
 from epiweeks import Week
+import datetime 
+from datetime import datetime 
 
 
 def ages_by_group(age_group):
@@ -140,12 +142,12 @@ def get_commits(disease, date, stratum):
 def get_sha(disease, date):
     df1 = get_commits(disease, date, 'states')
     # df1 = df1[df1.date.hour < 20]
-    print(df1.date)
+    print(df1.date.hour)
 
     
     df2 = get_commits(disease, date, 'age')
     # df2 = df2[df2.date.hour < 20]
-    print(df2.date)
+    print(df2.date.hour)
     
     df = pd.concat([df1, df2])
     
