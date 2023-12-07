@@ -2,7 +2,7 @@ name: "compute-reporting-triangles"
 on:
   workflow_dispatch:
   schedule:
-    - cron: "30 8,16 * * 1,5"
+    - cron: "30 8,13,16 * * 1,5"
   
 
 jobs:
