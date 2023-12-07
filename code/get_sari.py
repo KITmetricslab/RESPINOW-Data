@@ -80,9 +80,9 @@ print("List of tags:", tags)
 path = Path('../data/SARI/sari/')
 os.makedirs(path, exist_ok=True)
 dates_processed = sorted([file.name[:10] for file in path.glob('*.csv')])
-new_dates = [date for date in tags if previous_sunday(date) not in dates_processed]
+#new_dates = [date for date in tags if previous_sunday(date) not in dates_processed]
 
-for date in new_dates:
+for date in tags:
     print(date)
     df = load_file_from_tag(OWNER, REPO, FILEPATH, date)
     df = preprocess_sari(df)
