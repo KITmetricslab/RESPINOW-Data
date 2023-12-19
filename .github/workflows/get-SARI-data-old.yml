@@ -1,4 +1,4 @@
-name: "get-SARI-data"
+name: "get-SARI-data-old"
 on:
   workflow_dispatch:
   schedule:
