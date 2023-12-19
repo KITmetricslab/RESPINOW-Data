@@ -1,8 +1,8 @@
 name: "get-SARI-data-old"
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 16 * * 5"   
+  # schedule:
+  #   - cron: "0 16 * * 5"   
 
 jobs:
   get-SARI-data:
