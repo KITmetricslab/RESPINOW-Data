@@ -184,8 +184,8 @@ for age_group in AGE_GROUPS[1:]:
 
 DISEASE_DICT = {
     'Seasonal_Influenza' : 'influenza',
-    'RSV_Infection' : 'rsv',
-    'Pneumococcal_Disease' : 'pneumococcal'
+    'RSV_Infection' : 'rsv'#,
+    # 'Pneumococcal_Disease' : 'pneumococcal'
 }
 
 
