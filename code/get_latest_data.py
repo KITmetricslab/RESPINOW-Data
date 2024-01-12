@@ -36,11 +36,16 @@ def compute_latest_data(source, disease, tests=False):
     
     df = combine_file_history(files)
     
+    if source == 'Survstat':
+        df_history = pd.read_csv(f'../data/Survstat/history-survstat-{disease}.csv')
+        df = pd.concat([df_history, df])
+    
     if source in ['Survstat', 'AGI']:
         df.location = df.location.replace(STATE_DICT)
         df = df.groupby(['date', 'year', 'week', 'location', 'age_group']).sum().reset_index()
         
     df = df.sort_values(['location', 'age_group', 'date'])
+    df.value = df.value.astype('Int64')
     df.to_csv(f'../data/{source}/latest_data-{source}-{disease}{"-tests" if tests else ""}.csv', index=False)
 
     
