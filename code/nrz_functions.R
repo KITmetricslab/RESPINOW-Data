@@ -1,3 +1,4 @@
+install.packages("igraph", type="mac.binary")
 install.packages(c("dplyr", "imager", "magick", "tesseract", "ISOweek"), dependencies = TRUE)
 
 library(imager)
