@@ -5,7 +5,7 @@ source("nrz_functions.R")
 #Get current week
 date_string <- date2ISOweek(Sys.Date())
 #current_week <- substr(date_string,7,8)
-current_week <- "06"
+current_week <- "05"
 current_year <- as.integer(substr(date_string,1,4))
 
 #Create week string
