@@ -19,7 +19,7 @@ jobs:
       run: brew install xquartz --cask
           
     - name: Cache R packages 
-      uses: actions/cache@v1 
+      uses: actions/cache@main 
       with: 
         path: ${{ env.R_LIBS_USER }} 
         key: r-${{ hashFiles('DESCRIPTION') }}
