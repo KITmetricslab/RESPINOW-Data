@@ -150,8 +150,8 @@ def get_sha(disease, date):
     
     df = pd.concat([df1, df2])
     
-    if len(df) != 0:
-    # use the later date of the first commits
+    if len(df1) != 0 and len(df2) != 0:
+        # use the later date of the first commits
         return df.loc[df.date == df.groupby('stratum')['date'].max().max(), 'sha'].iloc[0]
     else:
         return None
