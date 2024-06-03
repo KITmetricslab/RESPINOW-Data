@@ -140,6 +140,7 @@ def get_commits(disease, date, stratum):
 
 
 def get_sha(disease, date):
+
     df1 = get_commits(disease, date, 'states')
     df1 = df1[df1.date.dt.hour < 21]
 
@@ -149,9 +150,11 @@ def get_sha(disease, date):
     
     df = pd.concat([df1, df2])
     
+    if len(df) != 0:
     # use the later date of the first commits
-    sha = df.loc[df.date == df.groupby('stratum')['date'].max().max(), 'sha'].iloc[0]
-    return sha
+        return df.loc[df.date == df.groupby('stratum')['date'].max().max(), 'sha'].iloc[0]
+    else:
+        return None
 
 
 PATH = 'https://raw.githubusercontent.com/KITmetricslab/nowcasting-data/'
@@ -184,8 +187,8 @@ for age_group in AGE_GROUPS[1:]:
 
 DISEASE_DICT = {
     'Seasonal_Influenza' : 'influenza',
-    'RSV_Infection' : 'rsv'#,
-    #'Pneumococcal_Disease' : 'pneumococcal'
+    'RSV_Infection' : 'rsv',
+    'Pneumococcal_Disease' : 'pneumococcal'
 }
 
 
@@ -194,6 +197,7 @@ for disease in DISEASE_DICT.keys():
     print(disease)
     df_files = list_all_files(disease)
     df_files['sha'] = df_files.date.apply(lambda x: get_sha(disease, x.date()))
+    df_files = df_files.dropna()
     for index, row in df_files.iterrows():
         print("Processing:", row.filename)
         df = load_data(disease, row.date.date(), row.sha)
