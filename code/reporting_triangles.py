@@ -214,6 +214,9 @@ def compute_reporting_triangle(source, disease, tests=False, max_delay=10, prosp
     
     path = (f'../data/{source}/reporting_triangle-{"icosari" if source == "SARI" else source.lower()}'
             f'-{disease}{"-tests" if tests else ""}.csv')
+
+    if source == 'SARI':
+        df = df[(df['date'] >= '2023-10-22') | (df['age_group'] == '00+')]
     
     df.to_csv(path, index=False)
 
