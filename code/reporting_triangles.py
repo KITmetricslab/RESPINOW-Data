@@ -216,7 +216,7 @@ def compute_reporting_triangle(source, disease, tests=False, max_delay=10, prosp
             f'-{disease}{"-tests" if tests else ""}.csv')
 
     if source == 'SARI':
-        df = df[(df['date'] >= '2023-10-22') | (df['age_group'] == '00+')]
+        df = df[(df['date'] >= pd.to_datetime('2023-10-22')) | (df['age_group'] == '00+')]
     
     df.to_csv(path, index=False)
 
@@ -224,11 +224,11 @@ def compute_reporting_triangle(source, disease, tests=False, max_delay=10, prosp
 # Compute all reporting triangles
 
 SOURCE_DICT = {
-    'SARI' : ['sari'],
-    'NRZ' : ['influenza', 'rsv'],
-    'Survstat' : ['influenza', 'rsv', 'pneumococcal'],
-    'CVN' : ['influenza', 'rsv', 'pneumococcal'],
-    'AGI' : ['are']
+    'SARI' : ['sari']#,
+    # 'NRZ' : ['influenza', 'rsv'],
+    # 'Survstat' : ['influenza', 'rsv', 'pneumococcal'],
+    # 'CVN' : ['influenza', 'rsv', 'pneumococcal'],
+    # 'AGI' : ['are']
 }
 
 for source in SOURCE_DICT.keys():
