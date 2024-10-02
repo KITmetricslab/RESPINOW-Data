@@ -29,6 +29,7 @@ files = [f for f in path.rglob('*reporting_triangle*.csv') if 'preprocessed' not
 for f in files:
     print("Processing:", f)
     df = pd.read_csv(f)
+    df = df.loc[:, : 'value_4w']
     df = preprocess_reporting_triangle(df)
     df.to_csv(f.with_name(f.stem + "-preprocessed.csv"), index = False)
     print("Done:", f.with_name(f.stem + "-preprocessed.csv\n"))
