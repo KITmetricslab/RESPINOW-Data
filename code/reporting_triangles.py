@@ -20,7 +20,7 @@ def load_data(source, disease, date, tests=False):
     if source == 'NRZ':
         path = f'../data/NRZ/{disease}/{date}_{"AmountTested" if tests else "VirusDetections"}.csv'
     elif source == 'SARI':
-        path = f'../data/SARI/sari/{date}-icosari-sari.csv'
+        path = f'../data/SARI/sari/{date}-icosari-{disease}.csv'
     elif source == 'Survstat':
         path = f'../data/Survstat/{disease}/{date}-survstat-{disease}.csv'
     elif source == 'CVN':
@@ -224,11 +224,11 @@ def compute_reporting_triangle(source, disease, tests=False, max_delay=10, prosp
 # Compute all reporting triangles
 
 SOURCE_DICT = {
-    'SARI' : ['sari'],
-    'NRZ' : ['influenza', 'rsv'],
-    'Survstat' : ['influenza', 'rsv', 'pneumococcal'],
-    'CVN' : ['influenza', 'rsv', 'pneumococcal'],
-    'AGI' : ['are']
+    'SARI' : ['sari', 'sari_covid19', 'sari_influenza', 'sari_rsv'],
+    # 'NRZ' : ['influenza', 'rsv'],
+    # 'Survstat' : ['influenza', 'rsv', 'pneumococcal'],
+    # 'CVN' : ['influenza', 'rsv', 'pneumococcal'],
+    # 'AGI' : ['are']
 }
 
 for source in SOURCE_DICT.keys():
