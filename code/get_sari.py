@@ -42,11 +42,11 @@ def previous_sunday(date):
     return str((Week.fromdate(pd.to_datetime(date), system='iso') - 1).enddate())
 
 def preprocess_sari(df):
-    df = df.drop(columns='Saison', errors='ignore')
+    df = df.drop(columns=['Saison', 'SARI'], errors='ignore')
 
     df = df.rename(columns={'Kalenderwoche' : 'date',
                             'Altersgruppe' : 'age_group',
-                            'SARI_Hospitalisierungsinzidenz' : 'value'})
+                            'Hospitalisierungsinzidenz' : 'value'})
     
     AGE_GROUPS = {'0-4' : '00-04', 
                   '5-14' : '05-14'}
@@ -69,23 +69,37 @@ def preprocess_sari(df):
     
     return df[['date', 'year', 'week', 'location', 'age_group', 'value']]
 
-
 OWNER = "robert-koch-institut"
 REPO = "SARI-Hospitalisierungsinzidenz"
 FILEPATH = "SARI-Hospitalisierungsinzidenz.tsv"
 
+SARI_DICT = {
+    'Gesamt' : 'sari',
+    'COVID-19' : 'sari_covid19',
+    'Influenza': 'sari_influenza',
+    'RSV': 'sari_rsv'
+}
+
 tags = get_all_date_tags(OWNER, REPO)
 print("List of tags:", tags)
 
-path = Path('../data/SARI/sari/')
-os.makedirs(path, exist_ok=True)
-dates_processed = sorted([file.name[:10] for file in path.glob('*.csv')])
-#new_dates = [date for date in tags if previous_sunday(date) not in dates_processed]
-new_dates = [t for t in tags if t > '2023-10-23']
+for s in SARI_DICT.values():
+    os.makedirs(f'../data/SARI/{s}/', exist_ok=True)
+
+# path = Path('../data/SARI/sari/')
+# os.makedirs(path, exist_ok=True)
+# dates_processed = sorted([file.name[:10] for file in path.glob('*.csv')])
+# new_dates = [date for date in tags if previous_sunday(date) not in dates_processed]
+new_dates = [t for t in tags if t >= '2024-10-10']
 
 for date in new_dates:
     print(date)
     df = load_file_from_tag(OWNER, REPO, FILEPATH, date)
-    df = preprocess_sari(df)
-    df.to_csv(f'../data/SARI/sari/{previous_sunday(date)}-icosari-sari.csv', index=False)
+
+    for c in df.SARI.unique():
+        print(f' - {c}')
+        df_temp = df[df.SARI == c]
+        df_temp = preprocess_sari(df_temp)
+        df_temp = df_temp.sort_values(['date', 'location', 'age_group'], ignore_index=True)
+        df_temp.to_csv(f'../data/SARI/{SARI_DICT[c]}/{previous_sunday(date)}-icosari-{SARI_DICT[c]}.csv', index=False)
     
