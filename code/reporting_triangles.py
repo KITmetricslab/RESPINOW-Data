@@ -70,6 +70,9 @@ def list_all_files(source, disease, tests=False):
     
     if source == 'NRZ':
         df_files = df_files[df_files.date >= "2022-07-24"]
+
+    if (source == 'Survstat') and (disease == 'rsv'):
+        df_files = df_files[df_files.date >= "2024-05-26"]
     
     return df_files
 
