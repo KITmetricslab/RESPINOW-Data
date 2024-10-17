@@ -122,6 +122,12 @@ def make_template(source, disease, dates):
     #     states = ['DE-SN']
     elif source == 'AGI':
         age_groups = ['00+', '00-04', '05-14', '15-34', '35-59', '60+']
+    elif disease == 'sari_covid19':
+        age_groups = ['00+', '60-79', '80+']
+    elif disease == 'sari_influenza':
+        age_groups = ['00+']
+    elif disease == 'sari_rsv':
+        age_groups = ['00+']
 
     dfs = []
     for date in dates:
