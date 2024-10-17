@@ -118,8 +118,8 @@ def make_template(source, disease, dates):
     elif source == 'CVN':
         states = []
         age_groups = ['00+']
-    elif source == 'Survstat' and disease == 'rsv':
-        states = ['DE-SN']
+    # elif source == 'Survstat' and disease == 'rsv':
+    #     states = ['DE-SN']
     elif source == 'AGI':
         age_groups = ['00+', '00-04', '05-14', '15-34', '35-59', '60+']
 
