@@ -20,7 +20,7 @@ def load_data(source, disease, date, tests=False):
     if source == 'NRZ':
         path = f'../data/NRZ/{disease}/{date}_{"AmountTested" if tests else "VirusDetections"}.csv'
     elif source == 'SARI':
-        path = f'../data/SARI/sari/{date}-icosari-{disease}.csv'
+        path = f'../data/SARI/{disease}/{date}-icosari-{disease}.csv'
     elif source == 'Survstat':
         path = f'../data/Survstat/{disease}/{date}-survstat-{disease}.csv'
     elif source == 'CVN':
