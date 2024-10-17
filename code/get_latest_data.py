@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 
 SOURCE_DICT = {
-    'SARI' : ['sari'],
+    'SARI' : ['sari', 'sari_covid19', 'sari_influenza', 'sari_rsv'],
     'NRZ' : ['influenza', 'rsv'],
     'Survstat' : ['influenza', 'rsv', 'pneumococcal'],
     'CVN' : ['influenza', 'rsv', 'pneumococcal'],
