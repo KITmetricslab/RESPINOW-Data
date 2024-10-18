@@ -36,7 +36,7 @@ def compute_latest_data(source, disease, tests=False):
     
     df = combine_file_history(files)
     
-    if source == 'Survstat':
+    if source == 'Survstat' and disease != 'covid19':
         df_history = pd.read_csv(f'../data/Survstat/history-survstat-{disease}.csv')
         df = pd.concat([df_history, df])
     
