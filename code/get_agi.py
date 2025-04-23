@@ -109,4 +109,5 @@ for date in new_dates:
     df = preprocess_ARE(df)
     print(df.head())
     df.to_csv(f'../data/AGI_abs/are/{previous_sunday(date)}-agi-are.csv', index=False)
+    print(f'../data/AGI_abs/are/{previous_sunday(date)}-agi-are.csv')
     
