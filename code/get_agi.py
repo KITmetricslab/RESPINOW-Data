@@ -103,7 +103,10 @@ dates_processed = sorted([file.name[:10] for file in path.glob('*.csv')])
 new_dates = [date for date in tags if previous_sunday(date) not in dates_processed]
 
 for date in new_dates:
-    print(date)
-    df = load_file_from_tag(OWNER, REPO, FILEPATH, date)
-    df = preprocess_ARE(df)
-    df.to_csv(f'../data/AGI_abs/are/{previous_sunday(date)}-agi-are.csv', index=False)    
+    try:
+        print(date)
+        df = load_file_from_tag(OWNER, REPO, FILEPATH, date)
+        df = preprocess_ARE(df)
+        df.to_csv(f'../data/AGI_abs/are/{previous_sunday(date)}-agi-are.csv', index=False)
+    except Exception as e:
+        print(f"Error processing date {date}: {e}")   
