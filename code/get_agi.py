@@ -85,7 +85,7 @@ def preprocess_ARE(df):
     population = population[population.location == 'DE']
     pop_dict = dict(zip(population.age_group, population.population))
     pop_dict['60+'] = pop_dict['60-79'] + pop_dict['80+']
-    df.value = df.apply(lambda x: int(x['value']*pop_dict[x['age_group']]/100000), axis=1)
+    df.value = df.fillna(0).apply(lambda x: int(x['value']*pop_dict[x['age_group']]/100000), axis=1)
     
     return df[['date', 'year', 'week', 'location', 'age_group', 'value']]
 
