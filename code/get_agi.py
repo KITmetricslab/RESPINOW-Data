@@ -78,6 +78,14 @@ def preprocess_ARE(df):
     df['week'] = df.date.apply(lambda x: x.week)
     df['year'] = df.date.apply(lambda x: x.year)
     df.date = df.date.apply(lambda x: x.enddate())
+
+    # convert from incidence (per 100,000) to absolute counts
+    population = pd.read_csv('https://raw.githubusercontent.com/KITmetricslab/RESPINOW-Hub/main/respinow_viz/plot_data/other/population_sizes.csv', 
+                        usecols=['location', 'age_group', 'population'])
+    population = population[population.location == 'DE']
+    pop_dict = dict(zip(population.age_group, population.population))
+    pop_dict['60+'] = pop_dict['60-79'] + pop_dict['80+']
+    df.value = df.apply(lambda x: int(x['value']*pop_dict[x['age_group']]/100000), axis=1)
     
     return df[['date', 'year', 'week', 'location', 'age_group', 'value']]
 
@@ -89,7 +97,7 @@ FILEPATH = "ARE-Konsultationsinzidenz.tsv"
 tags = get_all_date_tags(OWNER, REPO)
 print("List of tags:", tags)
 
-path = Path('../data/AGI/are/')
+path = Path('../data/AGI_abs/are/')
 os.makedirs(path, exist_ok=True)
 dates_processed = sorted([file.name[:10] for file in path.glob('*.csv')])
 new_dates = [date for date in tags if previous_sunday(date) not in dates_processed]
@@ -98,5 +106,5 @@ for date in new_dates:
     print(date)
     df = load_file_from_tag(OWNER, REPO, FILEPATH, date)
     df = preprocess_ARE(df)
-    df.to_csv(f'../data/AGI/are/{previous_sunday(date)}-agi-are.csv', index=False)
+    df.to_csv(f'../data/AGI_abs/are/{previous_sunday(date)}-agi-are.csv', index=False)
     
