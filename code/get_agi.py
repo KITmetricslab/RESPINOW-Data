@@ -105,6 +105,8 @@ new_dates = [date for date in tags if previous_sunday(date) not in dates_process
 for date in new_dates:
     print(date)
     df = load_file_from_tag(OWNER, REPO, FILEPATH, date)
+    print(df.head())
     df = preprocess_ARE(df)
+    print(df.head())
     df.to_csv(f'../data/AGI_abs/are/{previous_sunday(date)}-agi-are.csv', index=False)
     
