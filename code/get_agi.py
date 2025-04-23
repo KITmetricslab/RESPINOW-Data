@@ -10,7 +10,7 @@ def get_all_date_tags(owner, repo):
     tags_url = f"https://api.github.com/repos/{owner}/{repo}/tags"
     
     # Send a GET request to retrieve the list of tags
-    response = requests.get(tags_url)
+    response = requests.get(tags_url, params={'per_page': 200})
     
     if response.status_code == 200:
         # Parse the JSON response to get the list of tags
