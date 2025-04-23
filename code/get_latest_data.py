@@ -6,7 +6,8 @@ SOURCE_DICT = {
     'NRZ' : ['influenza', 'rsv'],
     'Survstat' : ['influenza', 'rsv', 'pneumococcal', 'covid19'],
     'CVN' : ['influenza', 'rsv', 'pneumococcal'],
-    'AGI' : ['are']
+    'AGI' : ['are'],
+    'AGI_abs' : ['are']
 }
 
 STATE_DICT = {
@@ -40,7 +41,7 @@ def compute_latest_data(source, disease, tests=False):
         df_history = pd.read_csv(f'../data/Survstat/history-survstat-{disease}.csv')
         df = pd.concat([df_history, df])
     
-    if source in ['Survstat', 'AGI']:
+    if source in ['Survstat', 'AGI', 'AGI_abs']:
         df.location = df.location.replace(STATE_DICT)
         df = df.groupby(['date', 'year', 'week', 'location', 'age_group']).sum().reset_index()
         
