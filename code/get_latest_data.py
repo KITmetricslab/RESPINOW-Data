@@ -3,6 +3,7 @@ from pathlib import Path
 
 SOURCE_DICT = {
     'SARI' : ['sari', 'sari_covid19', 'sari_influenza', 'sari_rsv'],
+    'SARI_inc' : ['sari', 'sari_covid19', 'sari_influenza', 'sari_rsv'],
     'NRZ' : ['influenza', 'rsv'],
     'Survstat' : ['influenza', 'rsv', 'pneumococcal', 'covid19'],
     'CVN' : ['influenza', 'rsv', 'pneumococcal'],
