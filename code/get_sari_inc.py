@@ -93,13 +93,16 @@ for s in SARI_DICT.values():
 new_dates = [t for t in tags] # if t >= '2024-10-10']
 
 for date in new_dates:
-    print(date)
-    df = load_file_from_tag(OWNER, REPO, FILEPATH, date)
-
-    for c in df.SARI.unique():
-        print(f' - {c}')
-        df_temp = df[df.SARI == c]
-        df_temp = preprocess_sari(df_temp)
-        df_temp = df_temp.sort_values(['date', 'location', 'age_group'], ignore_index=True)
-        df_temp.to_csv(f'../data/SARI_inc/{SARI_DICT[c]}/{previous_sunday(date)}-icosari-{SARI_DICT[c]}.csv', index=False)
+    try:    
+        print(date)
+        df = load_file_from_tag(OWNER, REPO, FILEPATH, date)
     
+        for c in df.SARI.unique():
+            print(f' - {c}')
+            df_temp = df[df.SARI == c]
+            df_temp = preprocess_sari(df_temp)
+            df_temp = df_temp.sort_values(['date', 'location', 'age_group'], ignore_index=True)
+            df_temp.to_csv(f'../data/SARI_inc/{SARI_DICT[c]}/{previous_sunday(date)}-icosari-{SARI_DICT[c]}.csv', index=False)
+    except Exception as e:
+        print(f"Error processing date {date}: {e}")
+        continue
