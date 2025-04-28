@@ -47,7 +47,8 @@ def compute_latest_data(source, disease, tests=False):
         df = df.groupby(['date', 'year', 'week', 'location', 'age_group']).sum().reset_index()
         
     df = df.sort_values(['location', 'age_group', 'date'])
-    df.value = df.value.astype('Int64')
+    if source != "SARI_inc":
+        df.value = df.value.astype('Int64')
     df.to_csv(f'../data/{source}/latest_data-{source}-{disease}{"-tests" if tests else ""}.csv', index=False)
 
     
