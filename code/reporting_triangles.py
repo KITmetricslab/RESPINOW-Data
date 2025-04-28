@@ -241,13 +241,13 @@ def compute_reporting_triangle(source, disease, tests=False, max_delay=10, prosp
 # Compute all reporting triangles
 
 SOURCE_DICT = {
-    'SARI' : ['sari', 'sari_covid19', 'sari_influenza', 'sari_rsv'],
+    # 'SARI' : ['sari', 'sari_covid19', 'sari_influenza', 'sari_rsv'],
     'SARI_inc' : ['sari', 'sari_covid19', 'sari_influenza', 'sari_rsv'],
-    'NRZ' : ['influenza', 'rsv'],
-    'Survstat' : ['influenza', 'rsv', 'pneumococcal', 'covid19'],
-    'CVN' : ['influenza', 'rsv', 'pneumococcal'],
-    'AGI' : ['are'],
-    'AGI_abs' : ['are']
+    # 'NRZ' : ['influenza', 'rsv'],
+    # 'Survstat' : ['influenza', 'rsv', 'pneumococcal', 'covid19'],
+    # 'CVN' : ['influenza', 'rsv', 'pneumococcal'],
+    # 'AGI' : ['are'],
+    # 'AGI_abs' : ['are']
 }
 
 for source in SOURCE_DICT.keys():
