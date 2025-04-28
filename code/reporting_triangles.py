@@ -222,8 +222,10 @@ def compute_reporting_triangle(source, disease, tests=False, max_delay=10, prosp
 
     # some formatting
     value_cols = [c for c in df.columns if 'value' in c]
-    for col in value_cols:
-        df[col] = df[col].astype('Int64')
+
+    if source != "SARI_inc":
+        for col in value_cols:
+            df[col] = df[col].astype('Int64')
 
     df = df[['location', 'age_group', 'year', 'week', 'date'] + value_cols]
 
