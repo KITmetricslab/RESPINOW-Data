@@ -14,9 +14,9 @@ def preprocess_reporting_triangle(df):
                     df.loc[i, j] = value
                     to_subtract = 0
 
-    value_cols = [c for c in df.columns if 'value' in c]
-    for col in value_cols:
-        df[col] = df[col].astype('Int64')
+    # value_cols = [c for c in df.columns if 'value' in c]
+    # for col in value_cols:
+    #     df[col] = df[col].astype('Int64')
     
     return(df)
 
@@ -28,8 +28,13 @@ for f in files:
     print("Processing:", f)
     df = pd.read_csv(f)
     df = df.loc[:, : 'value_4w']
-    if 'are' not in f.name and 'sari_inc' not in f.name:
+    if 'are' not in f.name:
         df = preprocess_reporting_triangle(df)
+        value_cols = [c for c in df.columns if 'value' in c]
+        if 'sari_inc' not in f.name:
+            df[value_cols] = df[value_cols].astype('Int64')
+        else:
+            df[value_cols] = df[value_cols].round(1)
     df = df.sort_values(['location', 'age_group', 'date'])
     df.to_csv(f.with_name(f.stem + "-preprocessed.csv"), index = False)
     print("Done:", f.with_name(f.stem + "-preprocessed.csv\n"))
