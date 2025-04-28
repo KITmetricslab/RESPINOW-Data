@@ -21,6 +21,8 @@ def load_data(source, disease, date, tests=False):
         path = f'../data/NRZ/{disease}/{date}_{"AmountTested" if tests else "VirusDetections"}.csv'
     elif source == 'SARI':
         path = f'../data/SARI/{disease}/{date}-icosari-{disease}.csv'
+    elif source == 'SARI_inc':
+        path = f'../data/SARI_inc/{disease}/{date}-icosari-{disease}.csv'
     elif source == 'Survstat':
         path = f'../data/Survstat/{disease}/{date}-survstat-{disease}.csv'
     elif source == 'CVN':
@@ -116,6 +118,8 @@ def make_template(source, disease, dates):
     if source == 'NRZ':
         age_groups = ['00+']
     elif source == 'SARI':
+        states = []
+    elif source == 'SARI_inc':
         states = []
     elif source == 'CVN':
         states = []
@@ -228,7 +232,7 @@ def compute_reporting_triangle(source, disease, tests=False, max_delay=10, prosp
     path = (f'../data/{source}/reporting_triangle-{"icosari" if source == "SARI" else source.lower()}'
             f'-{disease}{"-tests" if tests else ""}.csv')
 
-    if source == 'SARI':
+    if source in ['SARI', 'SARI_inc']:
         df = df[(df['date'] >= pd.Timestamp('2023-10-22').date()) | (df['age_group'] == '00+')]
     
     df.to_csv(path, index=False)
@@ -238,6 +242,7 @@ def compute_reporting_triangle(source, disease, tests=False, max_delay=10, prosp
 
 SOURCE_DICT = {
     'SARI' : ['sari', 'sari_covid19', 'sari_influenza', 'sari_rsv'],
+    'SARI_inc' : ['sari', 'sari_covid19', 'sari_influenza', 'sari_rsv'],
     'NRZ' : ['influenza', 'rsv'],
     'Survstat' : ['influenza', 'rsv', 'pneumococcal', 'covid19'],
     'CVN' : ['influenza', 'rsv', 'pneumococcal'],
