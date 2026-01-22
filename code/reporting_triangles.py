@@ -214,7 +214,7 @@ def compute_reporting_triangle(source, disease, tests=False, max_delay=10, prosp
     df[initial_report] = df[initial_report].fillna(0)
 
     # we use forward filling to fill missing values in between
-    df = df.fillna(method="ffill", axis=1)
+    df = df.ffill(axis=1)
     df = df.replace({'not_observed': np.nan})
 
     # compute differences
